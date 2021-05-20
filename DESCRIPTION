@@ -1,0 +1,35 @@
+Package: RBaM
+Type: Package
+Title: An R user interface to BaM
+Version: 0.1.0
+Authors@R: person("Benjamin", "Renard", email = "benjamin.renard@inrae.fr",
+    role = c("aut", "cre"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: BaM (Bayesian Modeling) is a framework aimed at estimating a model using a
+    bayesian approach and using it for prediction, with a particular focus
+    on uncertainty quantification. This R package is built as an R User Interface (RUI) 
+    to the computational BaM engine, which is a FORTRAN executable piloted by text configuration files.
+    The RUI defines classes (objects' properties and methods) for the various building blocks of 
+    BaM inference (model, data, error models, mcmc, predictions, etc.).
+    Its typical usage is as follows:
+	(1) specify the model to be estimated; 
+    (2) specify the inferrence setting (dataset, parameters, error models, mcmc settings);
+	(3) perform Bayesian-MCMC inference;
+    (4) read, analyse and use MCMC samples;
+	(5) perform prediction experiments.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggplot2,
+    R.utils,
+	utils,
+	grDevices,
+    stats
+Suggests: 
+    gridExtra,
+    tidyr,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr

@@ -1,0 +1,115 @@
+---
+title: "TextFile Model"
+subtitle: "Defining a simple model by typing formulas"
+author: "Ben Renard"
+date: "28/07/2020"
+output: 
+  html_document: 
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE,results='hide')
+```
+# Introduction and aims
+This vignette demonstrates how to define a new model by typing its constitutive formulas, and how to use BaM to calibrate and use it.
+
+# Description of the model
+The model assumes that the population of a given species at time $t$ is equal to:
+$$P(t)=\frac{K}{1+\frac{K-P_0}{P_0}*exp(-r*T(t)*t)}$$
+Where $P_0>0$ is the initial population, $K>P_0$ is the population upper limit (linked to environmental constraints), $T(t)>0$ is the temperature at time $t$ (assumed to be always positive here) and $r$ is the growth-to-temperature ratio (i.e. the growth rate is equal to $r*T$ - the warmer the temperature, the larger the population growth).
+
+Assume that the same initial population $P_0$ of the same species (hence having the same $r$) is placed in two different environments (hence different upper limits $K_1$ and $K_2$ and different temperatures times series $T_1$ and $T_2$). This lead to a model with two output variables ($P_1$ and $P_2$), three input variables ($t$,$T_1$ and $T_2$) and four parameters ($P_0$,$r$, $K_1$ and $K_2$) defined by the formulas:
+$$P_1(t)=\frac{K_1}{1+\frac{K_1-P_0}{P_0}*exp(-r*T_1(t)*t)}$$
+$$P_2(t)=\frac{K_2}{1+\frac{K_2-P_0}{P_0}*exp(-r*T_2(t)*t)}$$
+
+# Implementation in BaM
+Let's start by loading the RBaM package and define the workspace where config and result files will be written.
+
+```{r}
+library(RBaM)
+workspace=file.path(getwd(),'BaM_workspace')
+```
+
+The model is defined by two formulas, so let's type them as simple strings.
+
+```{r}
+f1='K1/(1+((K1-P0)/P0)*exp(-r*T1*t))'
+f2='K2/(1+((K2-P0)/P0)*exp(-r*T2*t))'
+```
+
+The next step is to define BaM `model` object. The main point to be careful with is to make sure that the parameter names are the same as the one used in the formulas. The name of the inputs and the formulas themselves are passed through the `xtraModelInfo` object.
+
+```{r}
+# parameters
+p1=parameter(name='P0',init=100,prior.dist='Gaussian',prior.par=c(100,10))
+p2=parameter(name='r',init=0.001,prior.dist='LogNormal',prior.par=c(-7,1))
+p3=parameter(name='K1',init=10000,prior.dist='LogNormal',prior.par=c(9,1))
+p4=parameter(name='K2',init=10000,prior.dist='LogNormal',prior.par=c(9,1))
+# use xtraModelInfo to pass the names of the inputs and the formulas
+xtra=xtraModelInfo(object=list(inputs=c('t','T1','T2'),formulas=c(f1,f2)))
+# model
+mod=model(ID='TextFile',nX=3,nY=2,par=list(p1,p2,p3,p4),xtra=xtra)
+```
+
+Now define calibration data (synthetic data here). The data frame `twoPopulations` comes with the `RBaM` package. 
+
+```{r}
+# Input data. WARNING: make sure column order is consistent with inputs declared in xtraModelInfo
+X=twoPopulations[,1:3] 
+# Output data. WARNING: make sure column order is consistent with the order of formulas
+Y=twoPopulations[,4:5]
+# dataset object
+data=dataset(X=X,Y=Y,data.dir=workspace)
+```
+
+Ready to go!
+
+```{r,results='asis'}
+BaM(mod=mod,data=data,workspace=workspace)
+```
+
+Have a look at MCMC
+```{r,results='asis'}
+mcmc=readMCMC(file=file.path(workspace,'Results_Cooking.txt'))
+g=tracePlot(mcmc)
+gridExtra::grid.arrange(grobs=g,ncol=3)
+g=densityPlot(mcmc)
+gridExtra::grid.arrange(grobs=g,ncol=3)
+```
+
+Have a look at obs vs. pred
+```{r,results='asis'}
+res=read.table(file=file.path(workspace,'Results_Residuals.txt'),header=TRUE)
+res[res==-9999] <- NA
+library(ggplot2)
+g=ggplot(res,aes(x=X1_obs))+theme_bw()+xlab('Time')+ylab('Population size')
+g=g+geom_line(aes(y=Y1_sim),color='blue')+geom_point(aes(y=Y1_obs),color='blue')
+g=g+geom_line(aes(y=Y2_sim),color='red')+geom_point(aes(y=Y2_obs),color='red')
+print(g)
+```
+
+Play with predictions: what would happen with a warming of +2 degree? 
+
+```{r,results='asis'}
+pred=prediction(X=data.frame(t=twoPopulations$t,
+                             T1=twoPopulations$T1+2,
+                             T2=twoPopulations$T2+2),
+                spagFiles=c('P1_warming.spag','P2_warming.spag'),
+                data.dir=workspace,doParametric=TRUE,doStructural=c(TRUE,TRUE))
+BaM(mod=mod,data=data,workspace=workspace,pred=pred,doCalib=FALSE,doPred=TRUE)
+```
+
+Plot spaghetti results for P2 for instance (gray), and compare with population associated with original temperature series (red). 
+
+```{r,results='asis'}
+spag=utils::read.table(file.path(workspace,'P2_warming.spag'))
+matplot(spag,type='l',col='gray')
+lines(res$Y2_sim,col='red')
+points(res$Y2_obs,col='red',pch=19)
+```
