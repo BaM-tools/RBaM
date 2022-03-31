@@ -6,7 +6,7 @@
 #'
 #' @param fname Character, configuration file name.
 #' @param result.fname Character, result file name.
-#' @param burn numeric, burn factor, >=0 and <1. 0.4 means the first 40% of
+#' @param burn numeric, burn factor, >=0 and <1. 0.4 means the first 40 percent of
 #'     MCMC samples are discarded).
 #' @param nSlim Integer, slimming period: 10 means only one MCMC sample
 #'     every 10 is kept (after burning).
