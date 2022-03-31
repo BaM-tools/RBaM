@@ -56,7 +56,8 @@
 #' pred=prediction(X=list(twoPopulations$t,T1rep,T2rep),spagFiles=c('P1.spag','P2.spag'))
 #' @export
 prediction<-function(X,spagFiles,
-                     data.dir=getwd(),data.fnames=paste0('X',1:length(X),'.pred'),fname="Config_Pred.txt",
+                     data.dir=getwd(),data.fnames=paste0('X',1:length(X),'.pred'),
+                     fname=paste0('Config_Pred_',paste0(sample(c(letters,LETTERS,0:9),6),collapse=''),'.txt'),
                      doParametric=FALSE,doStructural=rep(FALSE,length(spagFiles)),transposeSpag=TRUE,priorNsim=NULL,
                      envFiles=paste(tools::file_path_sans_ext(spagFiles),'.env'),
                      consoleProgress=TRUE,spagFiles_state=NULL,transposeSpag_state=TRUE,

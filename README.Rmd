@@ -1,0 +1,38 @@
+---
+title: "RBaM"
+subtitle: "An R user interface to BaM"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE,results='hide',
+                      fig.path = "man/readme/README-")
+```
+
+# Introduction
+
+BaM (Bayesian Modeling) is a framework to estimate a model using Bayesian inference. The R package `RBaM` is built as an R User Interface to the [computational BaM engine](https://github.com/BaM-tools/BaM). It defines classes (objects' properties and methods) for the various building blocks of a BaM case study. Its typical usage is as follows:
+
+1. Assemble the dataset of input/ouput variables.
+2. Define the model and set prior distributions for its parameters.
+3. Perform Bayesian-MCMC inference.
+4. Perform predictions.
+
+```{r message=FALSE}
+# devtools::install_github('BaM-tools/RBaM') # First use: install the package from GitHub
+library(RBaM) # Load package
+```
+
+The catalogue of distributions and models that are available in RBaM can be accessed as follows:
+
+```{r results='markup'}
+getCatalogue()
+```
+
+# A simple example using the BaRatin rating curve model
+
+
+
+
+
+
