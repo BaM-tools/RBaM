@@ -16,7 +16,7 @@ mcmcCooking(
 
 \item{result.fname}{Character, result file name.}
 
-\item{burn}{numeric, burn factor, >=0 and <1. 0.4 means the first 40% of
+\item{burn}{numeric, burn factor, >=0 and <1. 0.4 means the first 40 percent of
 MCMC samples are discarded).}
 
 \item{nSlim}{Integer, slimming period: 10 means only one MCMC sample

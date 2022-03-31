@@ -8,3 +8,16 @@
 #'   \item Data are synthetically generated from a logistic model.
 #' }
 "twoPopulations"
+
+#' Sauze Gaugings
+#'
+#' Stage-discharge gaugings from the hydrometric station 'the Ardèche River at Sauze-St-Martin'.
+#' See https://en.wikipedia.org/wiki/Ardèche_(river)
+#'
+#' @format A data frame with 38 rows and 3 variables:
+#' \describe{
+#'   \item{H}{Stage (m)}
+#'   \item{Q}{Discharge (m3/s)}
+#'   \item{uQ}{Discharge uncertainty (m3/s) expressed as a standard deviation}
+#' }
+"SauzeGaugings"
