@@ -85,18 +85,18 @@ D=dataset(X=SauzeGaugings['H'],Y=SauzeGaugings['Q'],Yu=SauzeGaugings['uQ'],data.
 ```
 
 The third step is to define the rating curve model. The code below
-specifies the priors on parameters, the control matrix and create the
+specifies the priors on parameters, the control matrix and creates the
 model object.
 
 ``` r
 # Parameters of the low flow section control: activation stage k, coefficient a and exponent c
-k1=parameter('k1',init=-0.5,prior.dist='Uniform',prior.par=c(-1.5,0))
-a1=parameter('a1',init=50,prior.dist='LogNormal',prior.par=c(log(50),1))
-c1=parameter('c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.05))
+k1=parameter(name='k1',init=-0.5,prior.dist='Uniform',prior.par=c(-1.5,0))
+a1=parameter(name='a1',init=50,prior.dist='LogNormal',prior.par=c(log(50),1))
+c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.05))
 # Parameters of the high flow channel control: activation stage k, coefficient a and exponent c
-k2=parameter('k2',init=1,prior.dist='Gaussian',prior.par=c(1,1))
-a2=parameter('a2',init=100,prior.dist='LogNormal',prior.par=c(log(100),1))
-c2=parameter('c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.05))
+k2=parameter(name='k2',init=1,prior.dist='Gaussian',prior.par=c(1,1))
+a2=parameter(name='a2',init=100,prior.dist='LogNormal',prior.par=c(log(100),1))
+c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.05))
 # Define control matrix: columns are controls, rows are stage ranges.
 # Here the matrix means that the first control only is active for the first stage range,
 # and the second control only is active for the second stage range.
@@ -146,7 +146,7 @@ head(MCMC)
 A few functions are provided with the package to explore MCMC samples.
 
 ``` r
-# trace plot for each parameter, useful to assess convergence.
+# Trace plot for each parameter, useful to assess convergence.
 plots=tracePlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
@@ -154,7 +154,7 @@ gridExtra::grid.arrange(grobs=plots,ncol=3)
 ![](man/readme/README-unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
-# density plot for each parameter
+# Density plot for each parameter
 plots=densityPlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
@@ -196,13 +196,13 @@ The resulting ‘spaghetti files’ can be read into the workspace and
 plotted.
 
 ``` r
-# plot spaghetti representing total uncertainty in red
+# Plot spaghetti representing total uncertainty in red
 Q=read.table(file.path(workspace,'totalU.spag'))
 matplot(hgrid$H,Q,col='red',type='l',lty=1)
-# add spaghetti representing parametric uncertainty in pink
+# Add spaghetti representing parametric uncertainty in pink
 Q=read.table(file.path(workspace,'paramU.spag'))
 matplot(hgrid$H,Q,col='pink',type='l',lty=1,add=TRUE)
-# add maxpost rating curve
+# Add maxpost rating curve
 Q=read.table(file.path(workspace,'maxpost.spag'))
 matplot(hgrid$H,Q,col='black',type='l',lty=1,add=TRUE)
 ```
