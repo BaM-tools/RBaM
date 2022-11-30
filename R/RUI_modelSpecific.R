@@ -22,7 +22,7 @@ writeConfig.xtra<-function(workspace,mod){
   # Models requiring only to write the list in mod$xtra$object into the config file
   if(ID %in% c('SFD','SWOT','Vegetation','DynamicVegetation',
                'Segmentation','Segmentation2','Sediment','Mixture',
-               'Orthorectification','Tidal','SFDTidal')){
+               'Orthorectification','Tidal','SFDTidal','MAGE')){
     txt<-toString_engine(x,NULL)
     quickWrite(txt,workspace,fname)
   }
@@ -103,7 +103,8 @@ getCatalogue<-function(printOnly=FALSE){
            'Recession_h','Segmentation','Segmentation2',
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
-           'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4')
+           'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4',
+           'MAGE')
   if(printOnly){
     message('DISTRIBUTIONS:')
     print(dist)
