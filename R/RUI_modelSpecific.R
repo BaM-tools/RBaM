@@ -15,14 +15,14 @@ writeConfig.xtra<-function(workspace,mod){
   x=mod$xtra$object
   fname=mod$xtra$fname
   # Models requiring no xtra information
-  if(ID %in% c('Linear','SGD','SFDTidal2','SFDTidalJones','SFDTidal4',
-               'SuspendedLoad','Recession_h','AlgaeBiomass')){
+  if(ID %in% c('Linear','SGD','SFDTidal','SFDTidal_Sw_correction','SFDTidal2','SFDTidalJones','SFDTidal4',
+               'TidalODE','TidalRemenieras','SuspendedLoad','Recession_h','AlgaeBiomass')){
     # Do nothing
   }
   # Models requiring only to write the list in mod$xtra$object into the config file
   if(ID %in% c('SFD','SWOT','Vegetation','DynamicVegetation',
-               'Segmentation','Segmentation2','Sediment','Mixture',
-               'Orthorectification','Tidal','SFDTidal','MAGE')){
+               'Segmentation','Sediment','Mixture',
+               'Orthorectification','Tidal','MAGE')){
     txt<-toString_engine(x,NULL)
     quickWrite(txt,workspace,fname)
   }
