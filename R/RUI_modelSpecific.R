@@ -100,11 +100,11 @@ getCatalogue<-function(printOnly=FALSE){
   models=c('TextFile',
            'BaRatin','BaRatinBAC','SFD','SGD','SWOT',
            'Vegetation','AlgaeBiomass','DynamicVegetation',
-           'Recession_h','Segmentation','Segmentation2',
+           'Recession_h','Segmentation',
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
            'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4',
-           'MAGE')
+           'TidalODE','TidalRemenieras','SFDTidal_Sw_correction','MAGE')
   if(printOnly){
     message('DISTRIBUTIONS:')
     print(dist)
