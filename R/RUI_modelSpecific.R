@@ -22,7 +22,7 @@ writeConfig.xtra<-function(workspace,mod){
   # Models requiring only to write the list in mod$xtra$object into the config file
   if(ID %in% c('SFD','SWOT','Vegetation','DynamicVegetation',
                'Segmentation','Sediment','Mixture',
-               'Orthorectification','Tidal','MAGE')){
+               'Orthorectification','Tidal')){
     txt<-toString_engine(x,NULL)
     quickWrite(txt,workspace,fname)
   }
@@ -73,6 +73,27 @@ writeConfig.xtra<-function(workspace,mod){
     }
     txt<-toString_engine(val,comments,addQuote=FALSE)
     quickWrite(txt,workspace,fname)
+  }
+  # MAGE: xtra$object is a named list with components:
+  # list(exeFile=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...)
+  if(ID=='MAGE'){
+    val=list(x$exeFile,x$mageDir,x$repFile,
+             x$zFileKmin,NCOL(x$zKmin),x$doExpKmin,
+             x$zFileKmoy,NCOL(x$zKmoy),x$doExpKmoy)
+    comments=c('Mage executable (full path)',
+               'MAGE Project directory (full path)',
+               'REP file (located in MAGE project directory - file name only, not full path)',
+               'Z file (full path) containing covariates for the regression Kmin(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
+               'number of columns p in Z file',
+               'apply exponential transformation to computed Kmins to ensure positivity?',
+               'Z file (full path) containing covariates for the regression Kmoy(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
+               'number of columns p in Z file',
+               'apply exponential transformation to computed Kmoys to ensure positivity?')
+    txt<-toString_engine(val,comments)
+    quickWrite(txt,workspace,fname)
+    # Write zKmin and zKmoy data frames to files
+    write.table(x$zKmin,file=x$zFileKmin,row.names=FALSE)
+    write.table(x$zKmoy,file=x$zFileKmoy,row.names=FALSE)
   }
 }
 

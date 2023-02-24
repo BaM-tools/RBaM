@@ -4,12 +4,21 @@
 \alias{mcmcSummary}
 \title{mcmcSummary constructor.}
 \usage{
-mcmcSummary(fname = "Config_Summary.txt", result.fname = "Results_Summary.txt")
+mcmcSummary(
+  fname = "Config_Summary.txt",
+  result.fname = "Results_Summary.txt",
+  DIC.fname = "Results_DIC.txt",
+  xtendedMCMC.fname = ""
+)
 }
 \arguments{
 \item{fname}{Character, configuration file name.}
 
-\item{result.fname}{Character, result file name.}
+\item{result.fname}{Character, summary file name.}
+
+\item{DIC.fname}{Character, DIC file name. Not computed if empty string.}
+
+\item{xtendedMCMC.fname}{Character, xtended MCMC file name. Not written if empty string.}
 }
 \value{
 An object of class 'mcmcSummary'.
