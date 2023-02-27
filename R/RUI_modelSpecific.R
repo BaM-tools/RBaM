@@ -74,8 +74,14 @@ writeConfig.xtra<-function(workspace,mod){
     txt<-toString_engine(val,comments,addQuote=FALSE)
     quickWrite(txt,workspace,fname)
   }
-  # MAGE: xtra$object is a named list with components:
-  # list(exeFile=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...)
+  # MAGE: xtra$object is a named list, xtra$object = list(exeFile=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...), with components:
+  # exeFile [string]: full path to MAGE executable
+  # mageDir [string]: full path to MAGE project directory
+  # repFile [string]: Name of the .REP file (located in MAGE project directory - file name only, not full path)
+  # zKmin [dataframe]: [n*p] design matrix for computing Kmin. The [n*1] values passed to MAGE through the .RUG file are computed by the matrix product zKmin*theta , where theta is the [p*1] parameter vector seen and estimated by BaM
+  # zFileKmin [string]: File (full path) where zKmin will be written
+  # doExpKmin [logical]: if TRUE, use an exponential transformation to ensure positivity, i.e. Kmin=exp(Z*theta)
+  # zKmoy, zFileKmoy, doExpKmoy: same as the 3 lines above, but for Kmoy instead of Kmin
   if(ID=='MAGE'){
     val=list(x$exeFile,x$mageDir,x$repFile,
              x$zFileKmin,NCOL(x$zKmin),x$doExpKmin,
