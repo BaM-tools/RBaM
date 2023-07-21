@@ -34,7 +34,7 @@ BaM <- function(mod,data,
                 doCalib=TRUE,doPred=FALSE,na.value=-9999,
                 run=TRUE,preClean=FALSE,
                 workspace=file.path(getwd(),'BaM_workspace'),
-                dir.exe=file.path(path.package('RBaM'),'bin'),name.exe='BaM',
+                dir.exe=file.path(find.package('RBaM'),'bin'),name.exe='BaM',
                 predMaster_fname="Config_Pred_Master.txt"
 ){
   #oooooooooooooooooooooooooooooooooooooooooo
