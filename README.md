@@ -1,7 +1,7 @@
-RBaM
-================
 
-# Introduction
+# RBaM - An R user interface to BaM <a href=""><img src="man/readme/logo.png" align="right" height="138" /></a>
+
+## Introduction
 
 BaM (Bayesian Modeling) is a framework to estimate a model using
 Bayesian inference. The R package `RBaM` is built as an R User Interface
@@ -13,8 +13,6 @@ building blocks of a BaM case study. Its typical usage is as follows:
 2.  Define the model and set prior distributions for its parameters.
 3.  Perform Bayesian-MCMC inference.
 4.  Perform predictions.
-
-<!-- end list -->
 
 ``` r
 # devtools::install_github('BaM-tools/RBaM') # First use: install the package from GitHub
@@ -36,23 +34,24 @@ getCatalogue()
     ## [21] "FIX"          "VAR"         
     ## 
     ## $models
-    ##  [1] "TextFile"           "BaRatin"            "BaRatinBAC"        
-    ##  [4] "SFD"                "SGD"                "SWOT"              
-    ##  [7] "Vegetation"         "AlgaeBiomass"       "DynamicVegetation" 
-    ## [10] "Recession_h"        "Segmentation"       "Segmentation2"     
-    ## [13] "Sediment"           "SuspendedLoad"      "Linear"            
-    ## [16] "Mixture"            "Orthorectification" "GR4J"              
-    ## [19] "Tidal"              "SFDTidal"           "SFDTidal2"         
-    ## [22] "SFDTidalJones"      "SFDTidal4"
+    ##  [1] "TextFile"               "BaRatin"                "BaRatinBAC"            
+    ##  [4] "SFD"                    "SGD"                    "SWOT"                  
+    ##  [7] "Vegetation"             "AlgaeBiomass"           "DynamicVegetation"     
+    ## [10] "Recession_h"            "Segmentation"           "Sediment"              
+    ## [13] "SuspendedLoad"          "Linear"                 "Mixture"               
+    ## [16] "Orthorectification"     "GR4J"                   "Tidal"                 
+    ## [19] "SFDTidal"               "SFDTidal2"              "SFDTidalJones"         
+    ## [22] "SFDTidal4"              "TidalODE"               "TidalRemenieras"       
+    ## [25] "SFDTidal_Sw_correction" "MAGE"
 
-# An example using the BaRatin rating curve model
+## An example using the BaRatin rating curve model
 
 A [rating curve](https://en.wikipedia.org/wiki/Rating_curve) is a model
-linking the water stage \(H\) measured at a given point of a river and
-the discharge \(Q\) flowing through it. The elementary rating curve
-equation has the power-law form Q=a(H-b)<sup>c</sup>, where a, b and c
-are parameters. Since different hydraulic controls may succeed to each
-other as the water stage increases, it is frequent to use a piecewise
+linking the water stage $H$ measured at a given point of a river and the
+discharge $Q$ flowing through it. The elementary rating curve equation
+has the power-law form Q=a(H-b)<sup>c</sup>, where a, b and c are
+parameters. Since different hydraulic controls may succeed to each other
+as the water stage increases, it is frequent to use a piecewise
 combination of these elementary equations, for instance:
 Q=a<sub>1</sub>(H-b<sub>1</sub>)<sup>c<sub>1</sub></sup> for
 k<sub>1</sub> \< H \< k<sub>2</sub>;
@@ -64,7 +63,7 @@ details.
 
 This example shows how to estimate a rating curve using a set of (H,Q)
 calibration data (called ‘gaugings’) from the [Ardèche
-river](https://en.wikipedia.org/wiki/Ardèche_\(river\)) at the
+river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the
 Sauze-Saint-Martin hydrometric station. The first thing to do is to
 define the workspace, i.e. the folder where configuration and result
 files will be written.
@@ -108,16 +107,16 @@ M=model(ID='BaRatin',
         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
 ```
 
-All set\! The function BaM can now be called to estimate parameters.
-This will run a MCMC sampler and save the result into the workspace.
+All set! The function BaM can now be called to estimate parameters. This
+will run a MCMC sampler and save the result into the workspace.
 
 ``` r
 BaM(mod=M,data=D)
 ```
 
-MCMC samples can now be read. There are 2 MCMC files:
-‘Results\_MCMC.txt’ contains raw MCMC simulations and is hence quite
-big. ‘Results\_Cooking.txt’ contains ‘cooked’ simulations, i.e. after
+MCMC samples can now be read. There are 2 MCMC files: ‘Results_MCMC.txt’
+contains raw MCMC simulations and is hence quite big.
+‘Results_Cooking.txt’ contains ‘cooked’ simulations, i.e. after
 ‘burning’ the first part of iterations and ‘slicing’ what remains, and
 may be favored in most cases. Functions `mcmcOptions()` and
 `mcmcCooking()` allow controlling MCMC properties.
@@ -128,20 +127,20 @@ MCMC=readMCMC(file.path(workspace,'Results_Cooking.txt'))
 head(MCMC)
 ```
 
-    ##          k1      a1      c1       k2       a2      c2     Y1_g1     Y1_g2
-    ## 1 -0.404593 48.3259 1.59541 0.962440  92.1037 1.74991 0.1354380 0.0765103
-    ## 2 -0.408637 47.9620 1.60694 1.044020  94.9692 1.74991 0.0796766 0.0668921
-    ## 3 -0.401201 47.9620 1.52124 0.957254 100.1070 1.74991 0.2352810 0.0812547
-    ## 4 -0.414557 47.6402 1.58156 1.053200 103.5360 1.71109 0.1703710 0.0544411
-    ## 5 -0.415928 47.4426 1.63010 0.994112 105.1670 1.70634 0.9635060 0.0247187
-    ## 6 -0.403956 47.6006 1.50846 1.086090 115.9120 1.68619 0.0658000 0.0699104
+    ##          k1      a1      c1       k2       a2      c2    Y1_g1     Y1_g2
+    ## 1 -0.246780 60.4238 1.48103 0.922899 102.8730 1.70117 2.582080 0.0224468
+    ## 2 -0.269413 60.5724 1.46413 0.930665  99.0574 1.70117 2.232150 0.0131388
+    ## 3 -0.291071 58.2851 1.51878 1.000870 105.3410 1.71316 1.904870 0.0157354
+    ## 4 -0.327582 55.5986 1.50333 1.053400 108.8020 1.67034 2.385710 0.0118051
+    ## 5 -0.346240 53.3239 1.50333 1.087950 120.9590 1.66413 0.756269 0.0414687
+    ## 6 -0.353747 51.7361 1.49109 1.045050 110.3710 1.69349 0.590987 0.0467566
     ##    LogPost        b1        b2
-    ## 1 -149.408 -0.404593 0.0425677
-    ## 2 -148.619 -0.408637 0.0904101
-    ## 3 -149.034 -0.401201 0.1001370
-    ## 4 -146.278 -0.414557 0.1474310
-    ## 5 -148.880 -0.415928 0.1232290
-    ## 6 -146.929 -0.403956 0.2433020
+    ## 1 -153.555 -0.246780 0.0845701
+    ## 2 -152.904 -0.269413 0.0544618
+    ## 3 -151.209 -0.291071 0.1125240
+    ## 4 -150.324 -0.327582 0.1588370
+    ## 5 -146.927 -0.346240 0.2412690
+    ## 6 -145.997 -0.353747 0.1859880
 
 A few functions are provided with the package to explore MCMC samples.
 
@@ -158,6 +157,14 @@ gridExtra::grid.arrange(grobs=plots,ncol=3)
 plots=densityPlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
+
+    ## Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `after_stat(density)` instead.
+    ## ℹ The deprecated feature was likely used in the RBaM package.
+    ##   Please report the issue to the authors.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](man/readme/README-unnamed-chunk-9-1.png)<!-- -->
 

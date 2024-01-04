@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^vignettes/BaM_workspace$
 ^data-raw$
+^logo.svg$
