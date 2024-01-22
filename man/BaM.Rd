@@ -19,7 +19,7 @@ BaM(
   run = TRUE,
   preClean = FALSE,
   workspace = file.path(getwd(), "BaM_workspace"),
-  dir.exe = file.path(path.package("RBaM"), "bin"),
+  dir.exe = file.path(find.package("RBaM"), "bin"),
   name.exe = "BaM",
   predMaster_fname = "Config_Pred_Master.txt"
 )

@@ -16,7 +16,7 @@ writeConfig.xtra<-function(workspace,mod){
   fname=mod$xtra$fname
   # Models requiring no xtra information
   if(ID %in% c('Linear','SGD','SFDTidal','SFDTidal_Sw_correction','SFDTidal2','SFDTidalJones','SFDTidal4',
-               'TidalODE','TidalRemenieras','SuspendedLoad','Recession_h','AlgaeBiomass')){
+               'SFDTidal_Qmec','TidalODE','TidalRemenieras','SuspendedLoad','Recession_h','AlgaeBiomass')){
     # Do nothing
   }
   # Models requiring only to write the list in mod$xtra$object into the config file
@@ -130,7 +130,7 @@ getCatalogue<-function(printOnly=FALSE){
            'Recession_h','Segmentation',
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
-           'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4',
+           'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4','SFDTidal_Qmec',
            'TidalODE','TidalRemenieras','SFDTidal_Sw_correction','MAGE')
   if(printOnly){
     message('DISTRIBUTIONS:')
