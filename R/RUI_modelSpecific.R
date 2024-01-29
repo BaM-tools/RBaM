@@ -42,6 +42,13 @@ writeConfig.xtra<-function(workspace,mod){
     txt<-toString_engine(val,NULL)
     quickWrite(txt,workspace,fname)
   }
+  # General section hydraulic control: write h-A-w matrix into the config file
+  if(ID=='HydraulicControl_section'){
+    val=list()
+    for(i in 1:NROW(x)){val=c(val,list(x[i,]))}
+    txt<-toString_engine(val,NULL)
+    quickWrite(txt,workspace,fname)
+  }
   # GR4J: write path to GR4J setup file
   if(ID=='GR4J'){
     if(is.null(x)){
@@ -131,7 +138,7 @@ getCatalogue<-function(printOnly=FALSE){
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
            'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4','SFDTidal_Qmec',
-           'TidalODE','TidalRemenieras','SFDTidal_Sw_correction','MAGE')
+           'TidalODE','TidalRemenieras','SFDTidal_Sw_correction','MAGE','HydraulicControl_section')
   if(printOnly){
     message('DISTRIBUTIONS:')
     print(dist)
