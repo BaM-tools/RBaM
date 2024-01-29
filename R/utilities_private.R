@@ -1,3 +1,5 @@
+# This file contains various private utilities that are NOT meant to be exported
+
 #*******************************************************************************
 #' Write value-comment pairs into string vector
 #' @param val List, object/list of values to be printed
