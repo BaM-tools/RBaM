@@ -62,7 +62,7 @@ prediction<-function(X,spagFiles,
                      envFiles=paste0(tools::file_path_sans_ext(spagFiles),'.env'),
                      consoleProgress=TRUE,spagFiles_state=NULL,transposeSpag_state=TRUE,
                      envFiles_state=switch(is.null(spagFiles_state)+1,
-                                          paste(tools::file_path_sans_ext(spagFiles_state),'.env'),
+                                          paste0(tools::file_path_sans_ext(spagFiles_state),'.env'),
                                           NULL) # dirty trick because ifelse cannot return NULL - see https://stackoverflow.com/questions/45814810/returning-null-using-ifelse-function
                      ){
   o<-new_prediction(X,spagFiles,data.dir,data.fnames,fname,doParametric,doStructural,transposeSpag,priorNsim,
@@ -94,8 +94,8 @@ toString.prediction<-function(x,...){
   nState=length(x$spagFiles_state)
   if(is.null(x$priorNsim)){Nsim=-1} else {Nsim=x$priorNsim}
   doEnv=rep(!is.null(x$envFiles),nY)
-  doState=!is.null(x$spagFiles_state)
-  doEnv_state=rep(is.null(x$envFiles_state),nState)
+  if(is.null(x$spagFiles_state)){doState=FALSE} else {doState=rep(TRUE,nState)}
+  if(is.null(x$envFiles_state)){doEnv_state=FALSE} else {doEnv_state=rep(TRUE,nState)}
   value=list(x$data.files,Nobs,Nspag,x$doParametric,x$doStructural,
              Nsim,x$spagFiles,rep(x$transposeSpag,nY),doEnv,x$envFiles,
              x$consoleProgress,doState,x$spagFiles_state,
