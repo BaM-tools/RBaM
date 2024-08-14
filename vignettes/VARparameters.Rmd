@@ -93,3 +93,42 @@ gridExtra::grid.arrange(grobs=plots,ncol=5)
 violinPlot(MCMC[c('k1_1','k1_2','k1_3','k1_4','k1_5')])
 violinPlot(MCMC[c('k2_1','k2_2','k2_3','k2_4','k2_5')])
 ```
+
+```{r,results='asis'}
+k1_nonVAR=parameter(name='k1',init=-0.6,prior.dist='Gaussian',prior.par=c(-0.6,0.5))
+k2_nonVAR=parameter(name='k2',init=0,prior.dist='Gaussian',prior.par=c(0,0.5))
+M_onePeriod=model(ID='BaRatin',
+        nX=1,nY=1, # number of input/output variables
+        par=list(k1_nonVAR,a1,c1,k2_nonVAR,a2,c2,k3,a3,c3), # list of model parameters
+        xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
+hgrid=data.frame(h=seq(-1,3,0.1))
+parSamples=MCMC[c('k1_5','a1','c1',
+                  'k2_5','a2','c2',
+                  'k3','a3','c3',
+                  'Y1_g1','Y1_g2','LogPost',
+                  'b1_5','b2_5','b3_5')]
+# Define a 'prediction' object for total predictive uncertainty
+totalU=prediction(X=hgrid, # stage values
+                  spagFiles='totalU.spag', # file where predictions are saved
+                  data.dir=workspace, # a copy of data files will be saved here
+                  doParametric=TRUE, # propagate parametric uncertainty, i.e. MCMC samples?
+                  doStructural=TRUE, # propagate structural uncertainty ?
+                  parSamples=parSamples)
+# Define a 'prediction' object for parametric uncertainty only - not the doStructural=FALSE
+paramU=prediction(X=hgrid,spagFiles='paramU.spag',data.dir=workspace,
+                  doParametric=TRUE,doStructural=FALSE,parSamples=parSamples)
+# Define a 'prediction' object with no uncertainty - this corresponds to the 'maxpost' rating curve maximizing the posterior
+maxpost=prediction(X=hgrid,spagFiles='maxpost.spag',data.dir=workspace,
+                  doParametric=FALSE,doStructural=FALSE,parSamples=parSamples)
+# Re-run BaM, but in prediction mode
+BaM(mod=M_onePeriod,data=D, # model and data
+    pred=list(totalU,paramU,maxpost), # list of predictions
+    doCalib=FALSE,doPred=TRUE) # Do not re-calibrate but do predictions
+# plot
+Q=read.table(file.path(workspace,'totalU.env'),header=T)
+matplot(hgrid$h,Q[,2:3],col='red',type='l',lty=1)
+Q=read.table(file.path(workspace,'paramU.env'),header=T)
+matplot(hgrid$h,Q[,2:3],col='pink',type='l',lty=1,add=TRUE)
+Q=read.table(file.path(workspace,'maxpost.spag'))
+matplot(hgrid$h,Q,col='black',type='l',lty=1,add=TRUE)
+```

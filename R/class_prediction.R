@@ -38,6 +38,7 @@
 #' @param transposeSpag_state Logical. Same as transposeSpag, but for states rather than outputs.
 #' @param envFiles_state Character vector (size nState, the number of state variables),
 #'     same as envFiles, but for states rather than outputs.
+#' @param parSamples data frame, parameter samples that will replace the MCMC-generated one for this prediction.
 #' @return An object of class 'prediction'.
 #' @examples
 #' #--------------
@@ -63,10 +64,10 @@ prediction<-function(X,spagFiles,
                      consoleProgress=TRUE,spagFiles_state=NULL,transposeSpag_state=TRUE,
                      envFiles_state=switch(is.null(spagFiles_state)+1,
                                           paste0(tools::file_path_sans_ext(spagFiles_state),'.env'),
-                                          NULL) # dirty trick because ifelse cannot return NULL - see https://stackoverflow.com/questions/45814810/returning-null-using-ifelse-function
-                     ){
+                                          NULL), # dirty trick because ifelse cannot return NULL - see https://stackoverflow.com/questions/45814810/returning-null-using-ifelse-function
+                     parSamples=NULL){
   o<-new_prediction(X,spagFiles,data.dir,data.fnames,fname,doParametric,doStructural,transposeSpag,priorNsim,
-                    envFiles,consoleProgress,spagFiles_state,transposeSpag_state,envFiles_state)
+                    envFiles,consoleProgress,spagFiles_state,transposeSpag_state,envFiles_state,parSamples)
   return(validate_prediction(o))
 }
 
@@ -159,7 +160,7 @@ is.prediction<-function(o){
 # internal constructor ----
 new_prediction<-function(X,spagFiles,data.dir,data.fname,fname,doParametric,doStructural,
                          transposeSpag,priorNsim,envFiles,consoleProgress,
-                         spagFiles_state,transposeSpag_state,envFiles_state){
+                         spagFiles_state,transposeSpag_state,envFiles_state,parSamples){
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # basic checks
   stopifnot(is.data.frame(X) | is.list(X))
@@ -176,6 +177,7 @@ new_prediction<-function(X,spagFiles,data.dir,data.fname,fname,doParametric,doSt
   if(!is.null(spagFiles_state)) stopifnot(is.character(spagFiles_state))
   stopifnot(is.logical(transposeSpag_state))
   if(!is.null(envFiles_state)) stopifnot(is.character(envFiles_state))
+  if(!is.null(parSamples)) stopifnot(is.data.frame(parSamples))
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # data files
   data.files=file.path(R.utils::getAbsolutePath(data.dir),data.fname)
@@ -185,7 +187,8 @@ new_prediction<-function(X,spagFiles,data.dir,data.fname,fname,doParametric,doSt
             X=X,spagFiles=spagFiles,doParametric=doParametric,doStructural=doStructural,
             transposeSpag=transposeSpag,priorNsim=priorNsim,envFiles=envFiles,
             consoleProgress=consoleProgress,spagFiles_state=spagFiles_state,
-            transposeSpag_state=transposeSpag_state,envFiles_state=envFiles_state)
+            transposeSpag_state=transposeSpag_state,envFiles_state=envFiles_state,
+            parSamples=parSamples)
   class(o) <- 'prediction'
   return(o)
 }

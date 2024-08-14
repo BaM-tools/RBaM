@@ -56,7 +56,7 @@ toString.model<-function(x,...){
         if(is.null(p$prior$par)){param=''} else {param=list(p$prior$par)}
         value=c(value,p$name,p$init,p$prior$dist,param)
       } else if(is.parameter_VAR(p)){
-        value=c(value,p$name,-99,'VAR',paste0('Config_',p$name,'_VAR.txt'))
+        value=c(value,p$name,-9999,'VAR',paste0('Config_',p$name,'_VAR.txt'))
       }
       comment=c(comment,
                 c('Parameter name',

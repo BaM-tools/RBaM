@@ -20,7 +20,8 @@ prediction(
   spagFiles_state = NULL,
   transposeSpag_state = TRUE,
   envFiles_state = switch(is.null(spagFiles_state) + 1,
-    paste0(tools::file_path_sans_ext(spagFiles_state), ".env"), NULL)
+    paste0(tools::file_path_sans_ext(spagFiles_state), ".env"), NULL),
+  parSamples = NULL
 )
 }
 \arguments{
@@ -71,6 +72,8 @@ same as spagFiles but for states rather than outputs. If NULL, states are not pr
 
 \item{envFiles_state}{Character vector (size nState, the number of state variables),
 same as envFiles, but for states rather than outputs.}
+
+\item{parSamples}{data frame, parameter samples that will replace the MCMC-generated one for this prediction.}
 }
 \value{
 An object of class 'prediction'.
