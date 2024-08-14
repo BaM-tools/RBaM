@@ -7,3 +7,7 @@ save(twoPopulations,file='../data/twoPopulations.RData')
 # Gaugings from the station 'Ardèche River at Sauze'
 SauzeGaugings=read.table('SauzeGaugings.txt',header=T)
 save(SauzeGaugings,file='../data/SauzeGaugings.RData')
+
+# Gaugings from the station 'Ardèche River at Meyras'
+MeyrasGaugings=read.table('MeyrasGaugings.txt',header=T)
+save(MeyrasGaugings,file='../data/MeyrasGaugings.RData')

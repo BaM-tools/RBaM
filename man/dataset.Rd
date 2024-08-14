@@ -15,7 +15,8 @@ dataset(
   Xb.indx = NULL,
   Yu = NULL,
   Yb = NULL,
-  Yb.indx = NULL
+  Yb.indx = NULL,
+  VAR.indx = NULL
 )
 }
 \arguments{
@@ -48,6 +49,8 @@ Same dimension as Y.}
 
 \item{Yb.indx}{data frame, index of systematic errors in Y.
 Same dimension as Y.}
+
+\item{VAR.indx}{data frame, indices used for defining how VAR parameters vary.}
 }
 \value{
 An object of class 'dataset'.

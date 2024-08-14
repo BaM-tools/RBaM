@@ -20,7 +20,7 @@ prediction(
   spagFiles_state = NULL,
   transposeSpag_state = TRUE,
   envFiles_state = switch(is.null(spagFiles_state) + 1,
-    paste(tools::file_path_sans_ext(spagFiles_state), ".env"), NULL)
+    paste0(tools::file_path_sans_ext(spagFiles_state), ".env"), NULL)
 )
 }
 \arguments{

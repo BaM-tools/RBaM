@@ -17,6 +17,7 @@ SauzeGaugings
 }
 \description{
 Stage-discharge gaugings from the hydrometric station 'the Ardèche River at Sauze-St-Martin'.
-See https://en.wikipedia.org/wiki/Ardèche_(river)
+See https://en.wikipedia.org/wiki/Ardèche_(river) for a description of the river
+See https://hal.science/hal-00934237 for an article using this dataset
 }
 \keyword{datasets}

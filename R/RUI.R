@@ -45,6 +45,15 @@ BaM <- function(mod,data,
   #oooooooooooooooooooooooooooooooooooooooooo
   # Write config files
   quickWrite(toString(mod),workspace,mod$fname)
+  npar=length(mod$par)
+  if(npar>0){
+    for (i in 1:npar){
+      p=mod$par[[i]]
+      if(is.parameter_VAR(p)){
+        writeConfig.parameter_VAR(workspace,paste0('Config_',p$name,'_VAR.txt'),p)
+      }
+    }
+  }
   writeConfig.xtra(workspace,mod)
   quickWrite(toString(data),workspace,data$fname)
   quickWrite(toString(mcmc),workspace,mcmc$fname)

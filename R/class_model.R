@@ -52,8 +52,12 @@ toString.model<-function(x,...){
   if(npar>0){
     for(i in 1:npar){
       p=x$par[[i]]
-      if(is.null(p$prior$par)){param=''} else {param=list(p$prior$par)}
-      value=c(value,p$name,p$init,p$prior$dist,param)
+      if(is.parameter(p)){
+        if(is.null(p$prior$par)){param=''} else {param=list(p$prior$par)}
+        value=c(value,p$name,p$init,p$prior$dist,param)
+      } else if(is.parameter_VAR(p)){
+        value=c(value,p$name,-99,'VAR',paste0('Config_',p$name,'_VAR.txt'))
+      }
       comment=c(comment,
                 c('Parameter name',
                   'Initial guess',
@@ -90,7 +94,7 @@ new_model<-function(fname,ID,nX,nY,par,xtra){
   npar=length(par)
   if(npar>0){
     for(i in 1:npar){
-      stopifnot(is.parameter(par[[i]]))
+      stopifnot(is.parameter(par[[i]]) | is.parameter_VAR(par[[i]]))
     }
   }
   stopifnot(is.xtraModelInfo(xtra))
@@ -107,5 +111,6 @@ validate_model<-function(x){
   if(x$nY < 0){stop("`nY` should be positive",call.=FALSE)}
   # model ID is in the catalogue
   if(!(x$ID %in% getCatalogue()$models)){stop("model `ID` does not exist in BaM catalogue",call.=FALSE)}
+  # 2DO: check there is no duplicates in parameter names, data frame column names etc.
   return(x)
 }

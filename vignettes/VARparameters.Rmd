@@ -1,0 +1,95 @@
+---
+title: "Using variable (VAR) parameters"
+subtitle: "XXX"
+author: "Ben Renard and Felipe Mendez-Rios"
+date: "14/08/2024"
+output: 
+  html_document: 
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE,results='hide')
+```
+# Introduction and aims
+This vignette demonstrates how to use VAR parameters.
+
+```{r}
+library(RBaM)
+workspace=file.path(getwd(),'BaM_workspace')
+```
+
+# Data
+
+See [this page](https://baratin-tools.github.io/en/doc/case/ardeche-meyras/).
+
+```{r}
+# Define the calibration dataset by specifying
+# inputs (X), outputs (Y), uncertainty on the outputs (Yu) and stability periods ().
+# A copy of this dataset will be written in data.dir.
+D=dataset(X=MeyrasGaugings['h'],Y=MeyrasGaugings['Q'],Yu=MeyrasGaugings['uQ'],
+          VAR.indx=MeyrasGaugings['Period'],data.dir=workspace)
+```
+
+# Model
+
+The next step is to define BaM `model` object.
+
+```{r}
+# Set prior information to each hydraulic control
+nPeriod=max(MeyrasGaugings['Period'])
+k1=parameter_VAR(name='k1',index='Period',d=D,
+                 init=rep(-0.6,nPeriod),
+                 prior.dist=rep('Gaussian',nPeriod),
+                 prior.par=rep(list(c(-0.6,0.5)),nPeriod))
+a1=parameter(name='a1',init=14.17,prior.dist='Gaussian',prior.par=c(14.17,3.65))
+c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.025))
+k2=parameter_VAR(name='k2',index='Period',d=D,
+                 init=rep(0,nPeriod),
+                 prior.dist=rep('Gaussian',nPeriod),
+                 prior.par=rep(list(c(0,0.5)),nPeriod))
+a2=parameter(name='a2',init=26.5,prior.dist='Gaussian',prior.par=c(26.5,8.4))
+c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
+k3=parameter(name='k3',init=1.2,prior.dist='Gaussian',prior.par=c(1.2,0.2))
+a3=parameter(name='a3',init=31.8,prior.dist='Gaussian',prior.par=c(31.8,10.9))
+c3=parameter(name='c3',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
+# Define control matrix: columns are controls, rows are stage ranges.
+controlMatrix=rbind(c(1,0,0),c(0,1,0),c(0,1,1))
+# Stitch it all together into a model object
+M=model(ID='BaRatin',
+        nX=1,nY=1, # number of input/output variables
+        par=list(k1,a1,c1,k2,a2,c2,k3,a3,c3), # list of model parameters
+        xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
+
+```
+
+# Calibration
+
+Ready to go!
+
+```{r,results='asis'}
+BaM(mod=M,data=D,workspace=workspace)
+```
+
+Have a look at MCMC
+```{r,results='asis'}
+MCMC=readMCMC(file.path(workspace,'Results_Cooking.txt'))
+head(MCMC)
+```
+
+XXX
+
+```{r,results='asis'}
+plots=tracePlot(MCMC)
+gridExtra::grid.arrange(grobs=plots,ncol=5)
+```
+
+```{r,results='asis'}
+violinPlot(MCMC[c('k1_1','k1_2','k1_3','k1_4','k1_5')])
+violinPlot(MCMC[c('k2_1','k2_2','k2_3','k2_4','k2_5')])
+```

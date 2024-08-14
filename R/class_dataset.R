@@ -23,6 +23,7 @@
 #'     Same dimension as Y.
 #' @param Yb.indx data frame, index of systematic errors in Y.
 #'     Same dimension as Y.
+#' @param VAR.indx data frame, indices used for defining how VAR parameters vary.
 #' @return An object of class 'dataset'.
 #' @examples
 #' X=data.frame(input1=rnorm(100),input2=rnorm(100))
@@ -32,8 +33,9 @@
 dataset<-function(X,Y,data.dir=getwd(),data.fname='CalibrationData.txt',
                   fname="Config_Data.txt",
                   Xu=NULL,Xb=NULL,Xb.indx=NULL,
-                  Yu=NULL,Yb=NULL,Yb.indx=NULL){
-  o<-new_dataset(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx)
+                  Yu=NULL,Yb=NULL,Yb.indx=NULL,
+                  VAR.indx=NULL){
+  o<-new_dataset(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx,VAR.indx)
   return(validate_dataset(o))
 }
 
@@ -89,7 +91,7 @@ is.dataset<-function(o){
 
 #***************************************************************************----
 # internal constructor ----
-new_dataset<-function(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx){
+new_dataset<-function(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx,VAR.indx){
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # basic checks
   stopifnot(is.data.frame(X))
@@ -103,6 +105,7 @@ new_dataset<-function(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx)
   if(!is.null(Yu)) stopifnot(is.data.frame(Yu))
   if(!is.null(Yb)) stopifnot(is.data.frame(Yb))
   if(!is.null(Yb.indx)) stopifnot(is.data.frame(Yb.indx))
+  if(!is.null(VAR.indx)) stopifnot(is.data.frame(VAR.indx))
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # data file
   data.file=file.path(R.utils::getAbsolutePath(data.dir),data.fname)
@@ -140,6 +143,12 @@ new_dataset<-function(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx)
   } else {
     if(NROW(Xb.indx)!=n | NCOL(Xb.indx)!=NCOL(X)){
       stop("`Xb.indx` should have the same dimensions (nrow,ncol) as `X`",call.=FALSE)
+    }
+    if(any(Xb.indx%%1!=0)){
+      stop("Xb.indx data frame contains non-integer values",call.=FALSE)
+    }
+    if(any(Xb.indx<=0)){
+      stop("Xb.indx data frame contains negative values",call.=FALSE)
     }
     W=cbind(W,Xb.indx)
     col.Xb.indx=(k+1):(k+NCOL(Xb.indx))
@@ -182,16 +191,39 @@ new_dataset<-function(X,Y,data.dir,data.fname,fname,Xu,Xb,Xb.indx,Yu,Yb,Yb.indx)
     if(NROW(Yb.indx)!=n | NCOL(Yb.indx)!=NCOL(Y)){
       stop("`Yb.indx` should have the same dimensions (nrow,ncol) as `Y`",call.=FALSE)
     }
+    if(any(Yb.indx%%1!=0)){
+      stop("Yb.indx data frame contains non-integer values",call.=FALSE)
+    }
+    if(any(Yb.indx<=0)){
+      stop("Yb.indx data frame contains negative values",call.=FALSE)
+    }
     W=cbind(W,Yb.indx)
     col.Yb.indx=(k+1):(k+NCOL(Yb.indx))
     k=k+NCOL(Yb.indx)
+  }
+  # index for VAR parameters
+  if(is.null(VAR.indx)){
+    col.VAR.indx=0
+  } else {
+    if(NROW(VAR.indx)!=n){
+      stop("`VAR.indx` should have the same number of rows as `X` and `Y`",call.=FALSE)
+    }
+    if(any(VAR.indx%%1!=0)){
+      stop("VAR.indx data frame contains non-integer values",call.=FALSE)
+    }
+    if(any(VAR.indx<=0)){
+      stop("VAR.indx data frame contains negative values",call.=FALSE)
+    }
+    W=cbind(W,VAR.indx)
+    col.VAR.indx=(k+1):(k+NCOL(VAR.indx))
+    k=k+NCOL(VAR.indx)
   }
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # Assemble dataset object
   o <- list(fname=fname,data.file=data.file,
             col.X=col.X,col.Xu=col.Xu,col.Xb=col.Xb,col.Xbindx=col.Xb.indx,
             col.Y=col.Y,col.Yu=col.Yu,col.Yb=col.Yb,col.Ybindx=col.Yb.indx,
-            data=W)
+            col.VAR.indx=col.VAR.indx,data=W)
   class(o) <- 'dataset'
   return(o)
 }

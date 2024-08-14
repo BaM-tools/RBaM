@@ -12,7 +12,8 @@
 #' Sauze Gaugings
 #'
 #' Stage-discharge gaugings from the hydrometric station 'the Ardèche River at Sauze-St-Martin'.
-#' See https://en.wikipedia.org/wiki/Ardèche_(river)
+#' See https://en.wikipedia.org/wiki/Ardèche_(river) for a description of the river
+#' See https://hal.science/hal-00934237 for an article using this dataset
 #'
 #' @format A data frame with 38 rows and 3 variables:
 #' \describe{
@@ -21,3 +22,18 @@
 #'   \item{uQ}{Discharge uncertainty (m3/s) expressed as a standard deviation}
 #' }
 "SauzeGaugings"
+
+#' Meyras Gaugings
+#'
+#' Stage-discharge gaugings from the hydrometric station 'the Ardèche River at Meyras'.
+#' See https://en.wikipedia.org/wiki/Ardèche_(river) for a description of the river
+#' See https://doi.org/10.1029/2018WR023389 for an article using this dataset
+#'
+#' @format A data frame with 104 rows and 4 variables:
+#' \describe{
+#'   \item{h}{Stage (m)}
+#'   \item{Q}{Discharge (m3/s)}
+#'   \item{uQ}{Discharge uncertainty (m3/s) expressed as a standard deviation}
+#'   \item{Period}{Stability period on which a single rating curve can be used}
+#' }
+"MeyrasGaugings"
