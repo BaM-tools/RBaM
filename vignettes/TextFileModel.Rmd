@@ -17,7 +17,7 @@ vignette: >
 knitr::opts_chunk$set(echo=TRUE,results='hide')
 ```
 # Introduction and aims
-This vignette demonstrates how to define a new model by typing its constitutive formulas, and how to use BaM to calibrate and use it.
+This vignette demonstrates how to define a new model by typing its constitutive formulas, and how to use `BaM` to calibrate and use it.
 
 # Description of the model
 The model assumes that the population of a given species at time $t$ is equal to:
@@ -29,7 +29,7 @@ $$P_1(t)=\frac{K_1}{1+\frac{K_1-P_0}{P_0}*exp(-r*T_1(t)*t)}$$
 $$P_2(t)=\frac{K_2}{1+\frac{K_2-P_0}{P_0}*exp(-r*T_2(t)*t)}$$
 
 # Implementation in BaM
-Let's start by loading the RBaM package and define the workspace where config and result files will be written.
+Let's start by loading the `RBaM` package and define the workspace where config and result files will be written.
 
 ```{r}
 library(RBaM)
@@ -43,7 +43,7 @@ f1='K1/(1+((K1-P0)/P0)*exp(-r*T1*t))'
 f2='K2/(1+((K2-P0)/P0)*exp(-r*T2*t))'
 ```
 
-The next step is to define BaM `model` object. The main point to be careful with is to make sure that the parameter names are the same as the one used in the formulas. The name of the inputs and the formulas themselves are passed through the `xtraModelInfo` object.
+The next step is to define `BaM` `model` object. The main point to be careful with is to make sure that the parameter names are the same as the one used in the formulas. The name of the inputs and the formulas themselves are passed through the `xtraModelInfo` object.
 
 ```{r}
 # parameters
@@ -57,7 +57,9 @@ xtra=xtraModelInfo(object=list(inputs=c('t','T1','T2'),formulas=c(f1,f2)))
 mod=model(ID='TextFile',nX=3,nY=2,par=list(p1,p2,p3,p4),xtra=xtra)
 ```
 
-Now define calibration data (synthetic data here). The data frame `twoPopulations` comes with the `RBaM` package. 
+# Model calibration
+
+Let's first define calibration data (synthetic data are used here). The data frame `twoPopulations` comes with the `RBaM` package. 
 
 ```{r}
 # Input data. WARNING: make sure column order is consistent with inputs declared in xtraModelInfo
@@ -68,13 +70,14 @@ Y=twoPopulations[,4:5]
 data=dataset(X=X,Y=Y,data.dir=workspace)
 ```
 
-Ready to go!
+Model calibration can now be performed by calling the function `BaM`.
 
 ```{r,results='asis'}
 BaM(mod=mod,data=data,workspace=workspace)
 ```
 
-Have a look at MCMC
+Visualizing MCMC simulations allows verifying that MCMC convergence is satisfying and allows exploring estimated parameters.
+
 ```{r,results='asis'}
 mcmc=readMCMC(file=file.path(workspace,'Results_Cooking.txt'))
 g=tracePlot(mcmc)
@@ -83,7 +86,8 @@ g=densityPlot(mcmc)
 gridExtra::grid.arrange(grobs=g,ncol=3)
 ```
 
-Have a look at obs vs. pred
+Observed vs. modeled population sizes can easily be compared thanks to the `Residuals` result file.
+
 ```{r,results='asis'}
 res=read.table(file=file.path(workspace,'Results_Residuals.txt'),header=TRUE)
 res[res==-9999] <- NA
@@ -94,7 +98,7 @@ g=g+geom_line(aes(y=Y2_sim),color='red')+geom_point(aes(y=Y2_obs),color='red')
 print(g)
 ```
 
-Play with predictions: what would happen with a warming of +2 degree? 
+Finally, it is possible to use the calibrated model to make predictions. For instance, how would the populations be affected by a warming of +2 degrees? Such a prediction can be performed as shown below. 
 
 ```{r,results='asis'}
 pred=prediction(X=data.frame(t=twoPopulations$t,
@@ -105,7 +109,7 @@ pred=prediction(X=data.frame(t=twoPopulations$t,
 BaM(mod=mod,data=data,workspace=workspace,pred=pred,doCalib=FALSE,doPred=TRUE)
 ```
 
-Plot spaghetti results for P2 for instance (gray), and compare with population associated with original temperature series (red). 
+The spaghetti resulting from this prediction can be plotted for P2 for instance (gray), and be compared with the population evolution associated with the original temperature series (red). 
 
 ```{r,results='asis'}
 spag=utils::read.table(file.path(workspace,'P2_warming.spag'))

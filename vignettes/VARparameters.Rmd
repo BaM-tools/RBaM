@@ -1,6 +1,6 @@
 ---
-title: "Using variable (VAR) parameters"
-subtitle: "XXX"
+title: "Using varying (VAR) parameters"
+subtitle: "Illustration with a shifting rating curve"
 author: "Ben Renard and Felipe Mendez-Rios"
 date: "14/08/2024"
 output: 
@@ -17,7 +17,10 @@ vignette: >
 knitr::opts_chunk$set(echo=TRUE,results='hide')
 ```
 # Introduction and aims
-This vignette demonstrates how to use VAR parameters.
+
+`BaM` allows assuming that some parameters of the model may vary across the calibration data. For instance, if a simple linear regression $y=ax+b$ is to be estimated based on some calibration data, but one knows that these data include two distinct populations, then it might be sensible to assume that either parameter $a$ or $b$ (or both!) can take distinct values on each population. 
+
+This vignette demonstrates how to use such varying (VAR) parameters by means of a case study dealing with a shifting rating curve. Let's start by loading the `RBaM` package and define the workspace where config and result files will be written.
 
 ```{r}
 library(RBaM)
@@ -26,38 +29,55 @@ workspace=file.path(getwd(),'BaM_workspace')
 
 # Data
 
-See [this page](https://baratin-tools.github.io/en/doc/case/ardeche-meyras/).
+The dataset `MeyrasGaugings` is provided with the package, and contains the following columns: stage `h` [m], discharge `Q` [m3/s], discharge uncertainty `uQ` [m3/s] expressed as a standard deviation, and stability period `Period`. According to the data provider, all data belonging to the same period can be described with the same rating curve model $Q=f(h;\boldsymbol{\theta})$. A more detailed description of this dataset can be found on [this page](https://baratin-tools.github.io/en/doc/case/ardeche-meyras/), and the figure below illustrates its content.
 
 ```{r}
-# Define the calibration dataset by specifying
-# inputs (X), outputs (Y), uncertainty on the outputs (Yu) and stability periods ().
-# A copy of this dataset will be written in data.dir.
+library(ggplot2)
+ggplot(MeyrasGaugings,aes(x=h,y=Q,color=factor(Period)))+
+  geom_pointrange(aes(ymin=Q-1.96*uQ,ymax=Q+1.96*uQ))+ # factor 1.96 leads to a 95% uncertainty interval
+  scale_color_brewer(palette='Set1')+theme_bw()
+```
+
+These data can be transformed into an `RBaM`-compatible object using the `dataset` function.
+
+```{r}
+# Define the calibration dataset by specifying inputs (X), outputs (Y), 
+# uncertainty on the outputs (Yu) and stability periods (VAR.indx).
 D=dataset(X=MeyrasGaugings['h'],Y=MeyrasGaugings['Q'],Yu=MeyrasGaugings['uQ'],
           VAR.indx=MeyrasGaugings['Period'],data.dir=workspace)
 ```
 
 # Model
 
-The next step is to define BaM `model` object.
+At this station, the rating curve model comprises 9 parameters (more details on the hydraulic analysis leading to this model can be found [here](https://baratin-tools.github.io/en/doc/case/ardeche-meyras/)). Among the 9 parameters, 7 are assumed to remain constant for all calibration data and are specified with the usual `parameter` function, while 2 may vary and are specified with a different function, `parameter_VAR`, as shown below. 
 
 ```{r}
-# Set prior information to each hydraulic control
-nPeriod=max(MeyrasGaugings['Period'])
-k1=parameter_VAR(name='k1',index='Period',d=D,
-                 init=rep(-0.6,nPeriod),
-                 prior.dist=rep('Gaussian',nPeriod),
-                 prior.par=rep(list(c(-0.6,0.5)),nPeriod))
+nPeriod=max(MeyrasGaugings['Period']) # number of stability periods
+# Parameter k1 is varying across periods
+k1=parameter_VAR(name='k1', # parameter name
+                 index='Period', # Name of the column in D$VAR.indx containing the priod index
+                 d=D, # The dataset mentioned above
+                 # The next 3 lines specify the parameter's initial guess and prior FOR EACH of the 5 PERIODS  
+                 init=rep(-0.6,nPeriod), # first guesses
+                 prior.dist=rep('Gaussian',nPeriod), # prior distributions
+                 prior.par=rep(list(c(-0.6,0.5)),nPeriod) # prior parameters
+                 )
+# parameter k2 is varying too
+k2=parameter_VAR(name='k2',index='Period',d=D,init=rep(0,nPeriod),
+                 prior.dist=rep('Gaussian',nPeriod),prior.par=rep(list(c(0,0.5)),nPeriod))
+# other parameters do not vary and are specified 'as usual'
 a1=parameter(name='a1',init=14.17,prior.dist='Gaussian',prior.par=c(14.17,3.65))
 c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.025))
-k2=parameter_VAR(name='k2',index='Period',d=D,
-                 init=rep(0,nPeriod),
-                 prior.dist=rep('Gaussian',nPeriod),
-                 prior.par=rep(list(c(0,0.5)),nPeriod))
 a2=parameter(name='a2',init=26.5,prior.dist='Gaussian',prior.par=c(26.5,8.4))
 c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
 k3=parameter(name='k3',init=1.2,prior.dist='Gaussian',prior.par=c(1.2,0.2))
 a3=parameter(name='a3',init=31.8,prior.dist='Gaussian',prior.par=c(31.8,10.9))
 c3=parameter(name='c3',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
+```
+
+The next step is to define the `model` object.
+
+```{r}
 # Define control matrix: columns are controls, rows are stage ranges.
 controlMatrix=rbind(c(1,0,0),c(0,1,0),c(0,1,1))
 # Stitch it all together into a model object
@@ -65,70 +85,111 @@ M=model(ID='BaRatin',
         nX=1,nY=1, # number of input/output variables
         par=list(k1,a1,c1,k2,a2,c2,k3,a3,c3), # list of model parameters
         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
-
 ```
 
 # Calibration
 
-Ready to go!
+Model calibration can be performed by calling the function `BaM`.
 
 ```{r,results='asis'}
 BaM(mod=M,data=D,workspace=workspace)
 ```
 
-Have a look at MCMC
+An excerpt of MCMC simulations is shown below, and it illustrates that 5 values (columns), corresponding to the 5 periods, have been estimated for varying parameters `k1` and `k2`. By contrast, a single value is estimated for non-varying parameters (`a1`, `c1`, etc.)
+
 ```{r,results='asis'}
 MCMC=readMCMC(file.path(workspace,'Results_Cooking.txt'))
-head(MCMC)
+knitr::kable(head(MCMC))
 ```
 
-XXX
-
-```{r,results='asis'}
-plots=tracePlot(MCMC)
-gridExtra::grid.arrange(grobs=plots,ncol=5)
-```
+The figures below show how the parameters `k1` and `k2` vary across periods. The strongest shift occurs between periods 3 and 4. 
 
 ```{r,results='asis'}
-violinPlot(MCMC[c('k1_1','k1_2','k1_3','k1_4','k1_5')])
-violinPlot(MCMC[c('k2_1','k2_2','k2_3','k2_4','k2_5')])
+f1=violinPlot(MCMC[c('k1_1','k1_2','k1_3','k1_4','k1_5')],ylab='k1')
+f2=violinPlot(MCMC[c('k2_1','k2_2','k2_3','k2_4','k2_5')],ylab='k2')
+gridExtra::grid.arrange(f1,f2,ncol=2)
 ```
+
+# Prediction
+
+Prediction with VAR parameters is a little bit tricky because `BaM` computational engine does not support it for the moment. However, it is still feasible with a little bit of data manipulation, as described next. In summary, the main steps are the following:
+
+1. Define a new `model` object where all VAR parameters have been turned into non-varying ones.
+2. Extract from the MCMC samples data frame the columns that are relevant for the period for which a prediction is sought.
+3. Perform prediction with this non-varying model and this reduced MCMC sample.
+
+The first step is fairly straightforward as illustrated below: it simply uses the function `parameter` instead of `parameter_VAR` to specify `k1` and `k2`, and create a new `model` object.
 
 ```{r,results='asis'}
 k1_nonVAR=parameter(name='k1',init=-0.6,prior.dist='Gaussian',prior.par=c(-0.6,0.5))
 k2_nonVAR=parameter(name='k2',init=0,prior.dist='Gaussian',prior.par=c(0,0.5))
-M_onePeriod=model(ID='BaRatin',
-        nX=1,nY=1, # number of input/output variables
+M_nonVAR=model(ID='BaRatin',nX=1,nY=1,
         par=list(k1_nonVAR,a1,c1,k2_nonVAR,a2,c2,k3,a3,c3), # list of model parameters
-        xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
-hgrid=data.frame(h=seq(-1,3,0.1))
-parSamples=MCMC[c('k1_5','a1','c1',
-                  'k2_5','a2','c2',
+        xtra=xtraModelInfo(object=controlMatrix))
+```
+
+The second step is to select the relevant columns from the MCMC sample data frame. Let's say for instance that one wishes to compute the rating curve for period number 5. For varying parameter `k1`, one should only select the column `k1_5` corresponding to this period, and discard columns `k1_1` to `k1_4` corresponding to other periods 1 to 4. The same applies to varying parameter `k2`. Other non-varying parameters (`a1`, `c1`, `a2`, `c2`, `k3`, `a3`, `c3` and the parameters of structural errors `Y1_g1` and `Y1_g2`) should be kept. The column `LogPost` should also be kept. Finally, all 'derived' parameters appearing after column `LogPost` and associated with period 5 should also be selected.
+
+This step is the most error-prone, and the following pieces of advice can be useful: 
+
+1. make sure you do not modify the order of columns that was used in the original MCMC data frame: columns should only be removed, not swapped.
+2. make sure you do not forget to select the relevant 'derived' parameters appearing after column `LogPost`.
+3. the structure of the resulting data frame should be the same as the MCMC sample you would obtain if you were calibrating the rating curve on a single period, with no VAR parameter.
+
+```{r,results='asis'}
+parSamples=MCMC[c('k1_5','a1','c1', # only k1 for period 5 is selected
+                  'k2_5','a2','c2', # only k2 for period 5 is selected
                   'k3','a3','c3',
                   'Y1_g1','Y1_g2','LogPost',
-                  'b1_5','b2_5','b3_5')]
+                  'b1_5','b2_5','b3_5')] # don't forget to select derived parameters for period 5 as well
+```
+
+The third step is to define prediction experiments 'as usual', except that the `parSamples` extracted at step 2 need to be passed to the function `prediction`, as shown below.
+
+```{r,results='asis'}
+hgrid=data.frame(h=seq(-1,3,0.1)) # Stage grid on which the rating curve is computed
 # Define a 'prediction' object for total predictive uncertainty
 totalU=prediction(X=hgrid, # stage values
                   spagFiles='totalU.spag', # file where predictions are saved
                   data.dir=workspace, # a copy of data files will be saved here
                   doParametric=TRUE, # propagate parametric uncertainty, i.e. MCMC samples?
                   doStructural=TRUE, # propagate structural uncertainty ?
-                  parSamples=parSamples)
-# Define a 'prediction' object for parametric uncertainty only - not the doStructural=FALSE
+                  parSamples=parSamples # pass the reduced MCMC data frame to use for this prediction
+                  )
+# Similarly, define a 'prediction' object for parametric uncertainty only (doStructural=FALSE)
 paramU=prediction(X=hgrid,spagFiles='paramU.spag',data.dir=workspace,
                   doParametric=TRUE,doStructural=FALSE,parSamples=parSamples)
-# Define a 'prediction' object with no uncertainty - this corresponds to the 'maxpost' rating curve maximizing the posterior
+# Similarly, define a 'prediction' object with no uncertainty ('maxpost' rating curve using the parameter vector that maximizes the posterior
 maxpost=prediction(X=hgrid,spagFiles='maxpost.spag',data.dir=workspace,
                   doParametric=FALSE,doStructural=FALSE,parSamples=parSamples)
+```
+
+Finally, function `BaM` can be called in prediction mode to perform computations.
+
+```{r,results='asis'}
 # Re-run BaM, but in prediction mode
-BaM(mod=M_onePeriod,data=D, # model and data
+BaM(mod=M_nonVAR,data=D, # model and data
     pred=list(totalU,paramU,maxpost), # list of predictions
     doCalib=FALSE,doPred=TRUE) # Do not re-calibrate but do predictions
-# plot
-Q=read.table(file.path(workspace,'totalU.env'),header=T)
-matplot(hgrid$h,Q[,2:3],col='red',type='l',lty=1)
-Q=read.table(file.path(workspace,'paramU.env'),header=T)
-matplot(hgrid$h,Q[,2:3],col='pink',type='l',lty=1,add=TRUE)
-Q=read.table(file.path(workspace,'maxpost.spag'))
-matplot(hgrid$h,Q,col='black',type='l',lty=1,add=TRUE)
+```
+
+The results of prediction experiments can then be read and used as illustrated below.
+
+```{r,results='asis'}
+# Read results from prediction experiments and put them in a data frame DF
+DF=data.frame(h=hgrid) # initialize DF with stage grid
+Q=read.table(file.path(workspace,'totalU.env'),header=T) # total uncertainty
+DF=cbind(DF,totalU_lower=Q$q2.5,totalU_upper=Q$q97.5)
+Q=read.table(file.path(workspace,'paramU.env'),header=T) # param uncertainty
+DF=cbind(DF,paramU_lower=Q$q2.5,paramU_upper=Q$q97.5)
+Q=read.table(file.path(workspace,'maxpost.spag')) # maxpost rating curve
+DF=cbind(DF,maxpost=Q$V1)
+# plot 
+ggplot(DF,aes(x=h))+
+  geom_ribbon(aes(ymin=totalU_lower,ymax=totalU_upper),fill='red')+ # total uncertainty
+  geom_ribbon(aes(ymin=paramU_lower,ymax=paramU_upper),fill='pink')+ # param. uncertainty
+  geom_line(aes(y=maxpost))+ # maxpost rating curve
+  geom_pointrange(data=MeyrasGaugings,aes(x=h,y=Q,ymin=Q-1.96*uQ,ymax=Q+1.96*uQ),color='grey')+ # all gaugings
+  geom_pointrange(data=MeyrasGaugings[MeyrasGaugings$Period==5,],aes(x=h,y=Q,ymin=Q-1.96*uQ,ymax=Q+1.96*uQ),color='orange')+ # gaugings from period 5
+  theme_bw()
 ```

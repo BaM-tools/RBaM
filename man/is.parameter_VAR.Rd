@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_parameter_VAR.R
 \name{is.parameter_VAR}
 \alias{is.parameter_VAR}
-\title{parameter tester}
+\title{parameter_VAR tester}
 \usage{
 is.parameter_VAR(o)
 }
@@ -10,9 +10,9 @@ is.parameter_VAR(o)
 \item{o}{Object, an object.}
 }
 \value{
-A logical equal to TRUE if class(o)== 'parameter', FALSE otherwise.
+A logical equal to TRUE if class(o)== 'parameter_VAR', FALSE otherwise.
 }
 \description{
-Is an object of class 'parameter'?
+Is an object of class 'parameter_VAR'?
 }
 \keyword{internal}

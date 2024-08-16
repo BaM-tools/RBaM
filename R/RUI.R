@@ -74,10 +74,10 @@ BaM <- function(mod,data,
       parSamples=pred$parSamples
     } else { # a list of several prediction experiments
       npred=length(pred)
+      parSamples=pred[[1]]$parSamples
       for(i in 1:npred){
         # Verify that all prediction experiments use the same parSamples
         # (possibly the MCMC-generated one when parSamples==NULL)
-        parSamples=pred[[1]]$parSamples
         if(!identical(pred[[i]]$parSamples,parSamples)){
           stop("All prediction experiments should use the same `parSamples` (possibly the MCMC-generated one when `parSamples`==NULL)",call.=FALSE)
         }
@@ -131,23 +131,27 @@ BaM <- function(mod,data,
 
   # If a prediction provides its own parSamples, need to backup-overwrite-restore cooked MCMC file
   if(!is.null(pred)){
-    # backup
-    invisible(file.copy(from=file.path(workspace,cook$result.fname),
-                        to=file.path(workspace,paste0('BACKUP_',cook$result.fname))))
-    # overwrite
-    write.table(parSamples,file.path(workspace,cook$result.fname),row.names=FALSE)
+    if(!is.null(parSamples)){
+      # backup
+      invisible(file.copy(from=file.path(workspace,cook$result.fname),
+                          to=file.path(workspace,paste0('BACKUP_',cook$result.fname))))
+      # overwrite
+      write.table(parSamples,file.path(workspace,cook$result.fname),row.names=FALSE)
+    }
   }
 
   if(run){try(runExe(exedir=dir.exe,exename=name.exe))}
 
   # If a prediction provides its own parSamples, need to cleanup
   if(!is.null(pred)){
-    # restore
-    invisible(file.copy(to=file.path(workspace,cook$result.fname),
-                        from=file.path(workspace,paste0('BACKUP_',cook$result.fname)),
-                        overwrite=TRUE))
-    # cleanup
-    invisible(file.remove(file.path(workspace,paste0('BACKUP_',cook$result.fname))))
+    if(!is.null(parSamples)){
+      # restore
+      invisible(file.copy(to=file.path(workspace,cook$result.fname),
+                          from=file.path(workspace,paste0('BACKUP_',cook$result.fname)),
+                          overwrite=TRUE))
+      # cleanup
+      invisible(file.remove(file.path(workspace,paste0('BACKUP_',cook$result.fname))))
+    }
   }
 }
 

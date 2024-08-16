@@ -2,12 +2,12 @@
 % Please edit documentation in R/class_parameter_VAR.R
 \name{toString.parameter_VAR}
 \alias{toString.parameter_VAR}
-\title{parameter to string}
+\title{parameter_VAR to string}
 \usage{
 \method{toString}{parameter_VAR}(x, ...)
 }
 \arguments{
-\item{x}{parameter object, object to be converted.}
+\item{x}{parameter_VAR object, object to be converted.}
 
 \item{...}{Optional arguments.}
 }
@@ -15,7 +15,7 @@
 A string ready to be printed or written.
 }
 \description{
-Convert an object of class 'parameter' into a ready-to-write vector of string
+Convert an object of class 'parameter_VAR' into a ready-to-write vector of string
 }
 \examples{
 X=data.frame(input1=rnorm(100),input2=rnorm(100))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_parameter_VAR.R
 \name{parameter_VAR}
 \alias{parameter_VAR}
-\title{parameter object constructor.}
+\title{Variable parameter object constructor.}
 \usage{
 parameter_VAR(
   name,
@@ -18,7 +18,7 @@ parameter_VAR(
 
 \item{index}{character, name of column in VAR.indx (see ?dataset) containing the index for this variable parameter}
 
-\item{d}{dataset object, the dataset containing in particular the index above}
+\item{d}{dataset object, the dataset containing (amongst other things) the index above}
 
 \item{init}{numeric vector, initial guesses for each instance of the VAR parameter.}
 
@@ -27,10 +27,10 @@ parameter_VAR(
 \item{prior.par}{list of numeric vectors, prior parameters for each instance of the VAR parameter}
 }
 \value{
-An object of class 'parameter'.
+An object of class 'parameter_VAR'.
 }
 \description{
-Creates a new instance of a 'parameter' object
+Creates a new instance of a 'parameter_VAR' object
 }
 \examples{
 X=data.frame(input1=rnorm(100),input2=rnorm(100))

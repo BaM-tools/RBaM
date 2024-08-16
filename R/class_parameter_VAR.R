@@ -1,16 +1,16 @@
 #***************************************************************************----
 # Constructor ----
-#' parameter object constructor.
+#' Varying parameter object constructor.
 #'
-#' Creates a new instance of a 'parameter' object
+#' Creates a new instance of a 'parameter_VAR' object
 #'
 #' @param name character, parameter name.
-#' @param index character, name of column in VAR.indx (see ?dataset) containing the index for this variable parameter
-#' @param d dataset object, the dataset containing in particular the index above
+#' @param index character, name of column in VAR.indx (see ?dataset) containing the index for this varying parameter
+#' @param d dataset object, the dataset containing (amongst other things) the index above
 #' @param init numeric vector, initial guesses for each instance of the VAR parameter.
 #' @param prior.dist character vector, prior distribution for each instance of the VAR parameter.
 #' @param prior.par list of numeric vectors, prior parameters for each instance of the VAR parameter
-#' @return An object of class 'parameter'.
+#' @return An object of class 'parameter_VAR'.
 #' @examples
 #' X=data.frame(input1=rnorm(100),input2=rnorm(100))
 #' Y=data.frame(output=X$input1+0.8*X$input2+0.1*rnorm(100))
@@ -28,11 +28,11 @@ parameter_VAR<-function(name,index,d,init,prior.dist=rep('FlatPrior',length(init
 
 #***************************************************************************----
 # toString function ----
-#' parameter to string
+#' parameter_VAR to string
 #'
-#' Convert an object of class 'parameter' into a ready-to-write vector of string
+#' Convert an object of class 'parameter_VAR' into a ready-to-write vector of string
 #'
-#' @param x parameter object, object to be converted.
+#' @param x parameter_VAR object, object to be converted.
 #' @param ... Optional arguments.
 #' @return A string ready to be printed or written.
 #' @examples
@@ -69,12 +69,12 @@ toString.parameter_VAR<-function(x,...){
 
 #***************************************************************************----
 # is function ----
-#' parameter tester
+#' parameter_VAR tester
 #'
-#' Is an object of class 'parameter'?
+#' Is an object of class 'parameter_VAR'?
 #'
 #' @param o Object, an object.
-#' @return A logical equal to TRUE if class(o)== 'parameter', FALSE otherwise.
+#' @return A logical equal to TRUE if class(o)== 'parameter_VAR', FALSE otherwise.
 #' @keywords internal
 is.parameter_VAR<-function(o){
   return(class(o)=='parameter_VAR')
