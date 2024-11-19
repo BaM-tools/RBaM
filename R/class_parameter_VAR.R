@@ -21,7 +21,7 @@
 #'                    prior.dist=c('Gaussian','FlatPrior','Triangle'),
 #'                    prior.par=list(c(-1,1),NULL,c(2,0,5)))
 #' @export
-parameter_VAR<-function(name,index,d,init,prior.dist=rep('FlatPrior',length(init)),prior.par=rep(NULL,length(init))){
+parameter_VAR<-function(name,index,d,init,prior.dist=rep('FlatPrior',length(init)),prior.par=rep(list(NULL),length(init))){
   o<-new_parameter_VAR(name,index,d,init,prior.dist,prior.par)
   return(validate_parameter_VAR(o))
 }

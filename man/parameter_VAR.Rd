@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_parameter_VAR.R
 \name{parameter_VAR}
 \alias{parameter_VAR}
-\title{Variable parameter object constructor.}
+\title{Varying parameter object constructor.}
 \usage{
 parameter_VAR(
   name,
@@ -10,13 +10,13 @@ parameter_VAR(
   d,
   init,
   prior.dist = rep("FlatPrior", length(init)),
-  prior.par = rep(NULL, length(init))
+  prior.par = rep(list(NULL), length(init))
 )
 }
 \arguments{
 \item{name}{character, parameter name.}
 
-\item{index}{character, name of column in VAR.indx (see ?dataset) containing the index for this variable parameter}
+\item{index}{character, name of column in VAR.indx (see ?dataset) containing the index for this varying parameter}
 
 \item{d}{dataset object, the dataset containing (amongst other things) the index above}
 
