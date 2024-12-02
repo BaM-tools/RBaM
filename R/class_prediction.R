@@ -35,6 +35,8 @@
 #' @param consoleProgress Logical, print progress in BaM.exe console?
 #' @param spagFiles_state Character vector (size nState, the number of state variables),
 #'     same as spagFiles but for states rather than outputs. If NULL, states are not predicted.
+#'     Note that only parametric uncertainty is propagated for state variables since they are not observed.
+#'     Consequently, structural uncertainty = 0 and total uncertainty = parametric uncertainty.
 #' @param transposeSpag_state Logical. Same as transposeSpag, but for states rather than outputs.
 #' @param envFiles_state Character vector (size nState, the number of state variables),
 #'     same as envFiles, but for states rather than outputs.

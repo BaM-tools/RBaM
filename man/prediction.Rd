@@ -66,7 +66,9 @@ If NULL, envolps are not computed.}
 \item{consoleProgress}{Logical, print progress in BaM.exe console?}
 
 \item{spagFiles_state}{Character vector (size nState, the number of state variables),
-same as spagFiles but for states rather than outputs. If NULL, states are not predicted.}
+same as spagFiles but for states rather than outputs. If NULL, states are not predicted.
+Note that only parametric uncertainty is propagated for state variables since they are not observed.
+Consequently, structural uncertainty = 0 and total uncertainty = parametric uncertainty.}
 
 \item{transposeSpag_state}{Logical. Same as transposeSpag, but for states rather than outputs.}
 
