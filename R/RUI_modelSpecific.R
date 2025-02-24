@@ -82,8 +82,9 @@ writeConfig.xtra<-function(workspace,mod){
     txt<-toString_engine(val,comments,addQuote=FALSE)
     quickWrite(txt,workspace,fname)
   }
-  # MAGE: xtra$object is a named list, xtra$object = list(exeFile=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...), with components:
+  # MAGE: xtra$object is a named list, xtra$object = list(exeFile=...,version=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...), with components:
   # exeFile [string]: full path to MAGE executable
+  # version [string]: MAGE version
   # mageDir [string]: full path to MAGE project directory
   # repFile [string]: Name of the .REP file (located in MAGE project directory - file name only, not full path)
   # zKmin [dataframe]: [n*p] design matrix for computing Kmin. The [n*1] values passed to MAGE through the .RUG file are computed by the matrix product zKmin*theta , where theta is the [p*1] parameter vector seen and estimated by BaM
@@ -91,10 +92,11 @@ writeConfig.xtra<-function(workspace,mod){
   # doExpKmin [logical]: if TRUE, use an exponential transformation to ensure positivity, i.e. Kmin=exp(Z*theta)
   # zKmoy, zFileKmoy, doExpKmoy: same as the 3 lines above, but for Kmoy instead of Kmin
   if(ID=='MAGE'){
-    val=list(x$exeFile,x$mageDir,x$repFile,
+    val=list(x$exeFile,x$version,x$mageDir,x$repFile,
              x$zFileKmin,NCOL(x$zKmin),x$doExpKmin,
              x$zFileKmoy,NCOL(x$zKmoy),x$doExpKmoy)
     comments=c('Mage executable (full path)',
+               'MAGE version',
                'MAGE Project directory (full path)',
                'REP file (located in MAGE project directory - file name only, not full path)',
                'Z file (full path) containing covariates for the regression Kmin(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
