@@ -13,7 +13,10 @@ mcmcOptions(
   maxMoveRate = 0.5,
   downMult = 0.9,
   upMult = 1.1,
-  multFactor = 0.1
+  multFactor = 0.1,
+  manualMode = FALSE,
+  thetaStd = 9999,
+  gammaStd = list(9999)
 )
 }
 \arguments{
@@ -38,7 +41,14 @@ when move rate is too low.}
 jump size when move rate is too high.}
 
 \item{multFactor}{Numeric >0, multiplicative factor to set initial jump standard deviations
-to multFactor*|initValue|.}
+to multFactor*|initValue| (AUTO mode).}
+
+\item{manualMode}{logical, should jump standard deviations be entered manually?}
+
+\item{thetaStd}{Numeric vector (>0), jump standard deviations for model parameters theta (MANUAL mode).}
+
+\item{gammaStd}{list of numeric vectors (>0), size = number of output variables of the model.
+Jump standard deviations for structural error parameters gamma of each output variable (MANUAL mode).}
 }
 \value{
 An object of class 'mcmcOptions'.
