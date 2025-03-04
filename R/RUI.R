@@ -140,6 +140,7 @@ BaM <- function(mod,data,
     }
   }
 
+  res=0
   if(run){res=try(runExe(exedir=dir.exe,exename=name.exe))}
   if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
 
