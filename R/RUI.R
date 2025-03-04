@@ -140,7 +140,8 @@ BaM <- function(mod,data,
     }
   }
 
-  if(run){try(runExe(exedir=dir.exe,exename=name.exe))}
+  if(run){res=try(runExe(exedir=dir.exe,exename=name.exe))}
+  if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
 
   # If a prediction provides its own parSamples, need to cleanup
   if(!is.null(pred)){

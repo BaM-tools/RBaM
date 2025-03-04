@@ -12,7 +12,7 @@ runExe(exedir, exename)
 \item{exename}{name of the executable}
 }
 \value{
-Nothing
+an error code (0 for success)
 }
 \description{
 Run an executable file
