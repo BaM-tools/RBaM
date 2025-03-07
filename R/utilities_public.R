@@ -72,3 +72,87 @@ getAwPfromBathy <- function(bathy,
   out=data.frame(h=hgrid,A=sapply(hgrid,fA),w=sapply(hgrid,fw),P=sapply(hgrid,fP))
   return(out)
 }
+
+
+#*******************************************************************************
+#' BaM downloader
+#'
+#' Download BaM executable
+#'
+#' @param url character string, the url where BaM should be downloaded.
+#'     When NULL, the url is determined automatically by using GitHub API to determine
+#'     the latest release and the file corresponding to the OS.
+#' @param os character string, operating system, e.g. 'Linux', 'Windows' or 'Darwin'.
+#' @param destFolder character string, folder where BaM executable will be downloaded.
+#'     By default the `bin` folder in RBaM installation directory.
+#' @param quiet logical, if TRUE, suppress status messages.
+#' @param ... arguments passed to function `download.file`
+#' @return nothing - just download the file.
+#' @examples
+#'   downloadBam(destFolder=tempdir())
+#' @export
+#' @importFrom rjson fromJSON
+downloadBam <- function(url=NULL,os=Sys.info()['sysname'],
+                        destFolder=file.path(find.package('RBaM'),'bin'),
+                        quiet=FALSE,...){
+  if(is.null(os)){stop('Unrecognized OS',call.=FALSE)}
+  if(is.null(url)){
+    url0='https://api.github.com/repos/BaM-tools/BaM/releases/latest'
+    if(!quiet){
+      message('----------------')
+      message('Determining latest version of BaM exe...')
+      message(' ')
+    }
+    foo=tryCatch(readLines(url0,warn=FALSE),error=function(e){NULL})
+    if(is.null(foo)){
+      mess=paste0('Could not download GitHub API file at url: ',url0,
+                  '. Please check you Internet connection, ',
+                  'or try providing the url of the BaM exe to download through the `url=` argument')
+      stop(mess,call.=FALSE)
+    }
+    js=rjson::fromJSON(foo)
+    tag=js$tag_name
+    allAssets=sapply(js$assets,function(x){x$browser_download})
+    k=grep(os,allAssets)
+    if(length(k)==0){
+      mess=paste0('Could not find a BaM exe for your OS in the latest BaM release. ',
+                  'Try providing the url of the BaM exe to download through the `url=` argument')
+      stop(mess,call.=FALSE)
+    }
+    if(length(k)>1){
+      mess=paste0('Several BaM exe files match your OS in the latest BaM release. ',
+                  'Try providing the url of the BaM exe to download through the `url=` argument')
+      stop(mess,call.=FALSE)
+    }
+    url=allAssets[k]
+  }
+  if(!quiet){
+    message('----------------')
+    message('Downloading zip file from: ', url)
+    message(' ')
+  }
+  filename <- basename(url)
+  tdir=tempdir()
+  ok=download.file(url,destfile=file.path(tdir,filename),...)
+  if(ok != 0){
+    mess=paste0('Unable to download BaM exe zip file at url: ',url,'...')
+    stop(mess,call.=FALSE)
+  }
+  if(!quiet){
+    message('----------------')
+    message('Unzipping...')
+    message(' ')
+  }
+  ok=unzip(zipfile=file.path(tdir,filename),exdir=destFolder)
+  if(is.null(ok)){
+    mess=paste0('Unable to extract BaM exe from zip file')
+    stop(mess,call.=FALSE)
+  }
+  if(!quiet){
+    message('----------------')
+    message('BaM executable was successfully dowloaded in folder: ',destFolder)
+    message(' ')
+
+  }
+}
+
