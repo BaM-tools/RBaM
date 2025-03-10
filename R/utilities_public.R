@@ -144,7 +144,11 @@ downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
     message('Unzipping...')
     message(' ')
   }
+  contents=unzip(zipfile=file.path(tdir,filename),list=TRUE)
   ok=unzip(zipfile=file.path(tdir,filename),exdir=destFolder)
+  if(os!='Windows'){
+    Sys.chmod(file.path(destFolder,contents$Name),mode="0777",use_umask = TRUE)
+  }
   if(is.null(ok)){
     mess=paste0('Unable to extract BaM exe from zip file')
     stop(mess,call.=FALSE)

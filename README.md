@@ -34,15 +34,21 @@ getCatalogue()
     ## [21] "FIX"          "VAR"         
     ## 
     ## $models
-    ##  [1] "TextFile"               "BaRatin"                "BaRatinBAC"            
-    ##  [4] "SFD"                    "SGD"                    "SWOT"                  
-    ##  [7] "Vegetation"             "AlgaeBiomass"           "DynamicVegetation"     
-    ## [10] "Recession_h"            "Segmentation"           "Sediment"              
-    ## [13] "SuspendedLoad"          "Linear"                 "Mixture"               
-    ## [16] "Orthorectification"     "GR4J"                   "Tidal"                 
-    ## [19] "SFDTidal"               "SFDTidal2"              "SFDTidalJones"         
-    ## [22] "SFDTidal4"              "TidalODE"               "TidalRemenieras"       
-    ## [25] "SFDTidal_Sw_correction" "MAGE"
+    ##  [1] "TextFile"                 "BaRatin"                 
+    ##  [3] "BaRatinBAC"               "SFD"                     
+    ##  [5] "SGD"                      "SWOT"                    
+    ##  [7] "Vegetation"               "AlgaeBiomass"            
+    ##  [9] "DynamicVegetation"        "Recession_h"             
+    ## [11] "Segmentation"             "Sediment"                
+    ## [13] "SuspendedLoad"            "Linear"                  
+    ## [15] "Mixture"                  "Orthorectification"      
+    ## [17] "GR4J"                     "Tidal"                   
+    ## [19] "SFDTidal"                 "SFDTidal2"               
+    ## [21] "SFDTidalJones"            "SFDTidal4"               
+    ## [23] "SFDTidal_Qmec0"           "SFDTidal_Qmec"           
+    ## [25] "SFDTidal_Qmec2"           "TidalODE"                
+    ## [27] "TidalRemenieras"          "SFDTidal_Sw_correction"  
+    ## [29] "MAGE"                     "HydraulicControl_section"
 
 ## An example using the BaRatin rating curve model
 
@@ -57,11 +63,12 @@ Q=a<sub>1</sub>(H-b<sub>1</sub>)<sup>c<sub>1</sub></sup> for
 k<sub>1</sub> \< H \< k<sub>2</sub>;
 Q=a<sub>2</sub>(H-b<sub>2</sub>)<sup>c<sub>2</sub></sup> for H \>
 k<sub>2</sub>, with k<sub>1</sub> and k<sub>2</sub> the activation
-stages of the first and the second control. We refer to [this article](https://hal.science/hal-00934237) for additional
-details.
+stages of the first and the second control. We refer to [this
+article](https://hal.science/hal-00934237) for additional details.
 
 This example shows how to estimate a rating curve using a set of (H,Q)
-calibration data (called ‘gaugings’) from the [Ardèche river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the
+calibration data (called ‘gaugings’) from the [Ardèche
+river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the
 Sauze-Saint-Martin hydrometric station. The first thing to do is to
 define the workspace, i.e. the folder where configuration and result
 files will be written.
@@ -155,14 +162,6 @@ gridExtra::grid.arrange(grobs=plots,ncol=3)
 plots=densityPlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
-
-    ## Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.
-    ## ℹ Please use `after_stat(density)` instead.
-    ## ℹ The deprecated feature was likely used in the RBaM package.
-    ##   Please report the issue to the authors.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
 
 ![](man/readme/README-unnamed-chunk-9-1.png)<!-- -->
 

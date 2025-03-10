@@ -322,7 +322,7 @@ densityPlot <- function(sim,xlab='values',col='black'){
     g[[i]] <- ggplot(DF,aes(.data$val))+
       scale_x_continuous(xl[i])+
       scale_y_continuous('posterior pdf')+
-      geom_histogram(aes(y=after_stat(stats::density)),fill=NA,col='black',
+      geom_histogram(aes(y=after_stat(density)),fill=NA,col='black',
                      binwidth=(max(DF$val)-min(DF$val))/30)+
       geom_density(fill=col,alpha=0.5,col=NA)
 
