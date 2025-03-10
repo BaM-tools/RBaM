@@ -67,3 +67,26 @@ Nothing: just write config files and runs the executable.
 \description{
 Run BaM.exe
 }
+\examples{
+# Fitting a rating curve - see https://github.com/BaM-tools/RBaM
+workspace=tempdir()
+D=dataset(X=SauzeGaugings['H'],Y=SauzeGaugings['Q'],Yu=SauzeGaugings['uQ'],data.dir=workspace)
+# Parameters of the low flow section control: activation stage k, coefficient a and exponent c
+k1=parameter(name='k1',init=-0.5,prior.dist='Uniform',prior.par=c(-1.5,0))
+a1=parameter(name='a1',init=50,prior.dist='LogNormal',prior.par=c(log(50),1))
+c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.05))
+# Parameters of the high flow channel control: activation stage k, coefficient a and exponent c
+k2=parameter(name='k2',init=1,prior.dist='Gaussian',prior.par=c(1,1))
+a2=parameter(name='a2',init=100,prior.dist='LogNormal',prior.par=c(log(100),1))
+c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.05))
+# Define control matrix: columns are controls, rows are stage ranges.
+controlMatrix=rbind(c(1,0),c(0,1))
+# Stitch it all together into a model object
+M=model(ID='BaRatin',
+        nX=1,nY=1, # number of input/output variables
+        par=list(k1,a1,c1,k2,a2,c2), # list of model parameters
+        xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
+# Call BaM to write configuration files. To actually run BaM, use run=TRUE,
+# but BaM executable needs to be downloaded first (use downloadBaM())
+BaM(mod=M,data=D,run=FALSE,workspace=workspace)
+}

@@ -57,13 +57,11 @@ Q=a<sub>1</sub>(H-b<sub>1</sub>)<sup>c<sub>1</sub></sup> for
 k<sub>1</sub> \< H \< k<sub>2</sub>;
 Q=a<sub>2</sub>(H-b<sub>2</sub>)<sup>c<sub>2</sub></sup> for H \>
 k<sub>2</sub>, with k<sub>1</sub> and k<sub>2</sub> the activation
-stages of the first and the second control. We refer to [this
-article](https://hal.archives-ouvertes.fr/hal-00934237) for additional
+stages of the first and the second control. We refer to [this article](https://hal.science/hal-00934237) for additional
 details.
 
 This example shows how to estimate a rating curve using a set of (H,Q)
-calibration data (called ‘gaugings’) from the [Ardèche
-river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the
+calibration data (called ‘gaugings’) from the [Ardèche river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the
 Sauze-Saint-Martin hydrometric station. The first thing to do is to
 define the workspace, i.e. the folder where configuration and result
 files will be written.
@@ -111,7 +109,7 @@ All set! The function BaM can now be called to estimate parameters. This
 will run a MCMC sampler and save the result into the workspace.
 
 ``` r
-BaM(mod=M,data=D)
+BaM(mod=M,data=D,workspace=workspace)
 ```
 
 MCMC samples can now be read. There are 2 MCMC files: ‘Results_MCMC.txt’

@@ -61,7 +61,7 @@ If negative or NULL (default), posterior samples are used.}
 \item{envFiles}{Character vector (size nY, the number of output variables). Name of the files containing the
 envelops (e.g. prediction intervals) computed from the spaghettis for each output variable.
 By default, same name as spaghetti files but with a '.env' extension.
-If NULL, envolps are not computed.}
+If NULL, envelops are not computed.}
 
 \item{consoleProgress}{Logical, print progress in BaM.exe console?}
 

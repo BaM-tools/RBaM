@@ -14,9 +14,10 @@
 #' @examples
 #' X=data.frame(input1=rnorm(100),input2=rnorm(100))
 #' Y=data.frame(output=X$input1+0.8*X$input2+0.1*rnorm(100))
-#' VAR.indx=data.frame(i1=c(rep(1,50),rep(2,50)),i2=1:100)
-#' d <- dataset(X=X,Y=Y,data.dir=getwd(),VAR.indx=VAR.indx)
-#' p <- parameter_VAR(name='par',index='i1',d=d,
+#' VAR.indx=data.frame(indx=c(rep(1,50),rep(2,50)))
+#' workspace=tempdir()
+#' d <- dataset(X=X,Y=Y,data.dir=workspace,VAR.indx=VAR.indx)
+#' p <- parameter_VAR(name='par',index='indx',d=d,
 #'                    init=c(-1,1,2),
 #'                    prior.dist=c('Gaussian','FlatPrior','Triangle'),
 #'                    prior.par=list(c(-1,1),NULL,c(2,0,5)))
@@ -38,9 +39,10 @@ parameter_VAR<-function(name,index,d,init,prior.dist=rep('FlatPrior',length(init
 #' @examples
 #' X=data.frame(input1=rnorm(100),input2=rnorm(100))
 #' Y=data.frame(output=X$input1+0.8*X$input2+0.1*rnorm(100))
-#' VAR.indx=data.frame(i1=c(rep(1,50),rep(2,50)),i2=1:100)
-#' d <- dataset(X=X,Y=Y,data.dir=getwd(),VAR.indx=VAR.indx)
-#' p <- parameter_VAR(name='par',index='i1',d=d,
+#' VAR.indx=data.frame(indx=c(rep(1,50),rep(2,50)))
+#' workspace=tempdir()
+#' d <- dataset(X=X,Y=Y,data.dir=workspace,VAR.indx=VAR.indx)
+#' p <- parameter_VAR(name='par',index='indx',d=d,
 #'                    init=c(-1,1,2),
 #'                    prior.dist=c('Gaussian','FlatPrior','Triangle'),
 #'                    prior.par=list(c(-1,1),NULL,c(2,0,5)))

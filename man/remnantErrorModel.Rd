@@ -15,10 +15,10 @@ remnantErrorModel(
 \item{fname}{Character, configuration file name.}
 
 \item{funk}{Character, function f used in remnant sdev = f(Ysim).
-Available: 'Constant','Linear' (default), 'Exponential', 'Gaussian'.}
+Available: 'Constant', 'Proportional', 'Linear' (default), 'Exponential', 'Gaussian'.}
 
 \item{par}{list of parameter objects, parameters of the function above.
-respectively, npar= 1,2,3,3}
+respectively, npar= 1,1,2,3,3}
 }
 \value{
 An object of class 'remnantErrorModel'.

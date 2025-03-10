@@ -2,7 +2,7 @@
 % Please edit documentation in R/RUI.R
 \name{tracePlot}
 \alias{tracePlot}
-\title{MCMC trace plots}
+\title{MCMC reporting}
 \usage{
 tracePlot(sim, ylab = "values", keep = NULL, col = "black", psize = 0.5)
 }
@@ -21,16 +21,17 @@ tracePlot(sim, ylab = "values", keep = NULL, col = "black", psize = 0.5)
 A ggplot (or a list thereof if several columns in sim)
 }
 \description{
-2DO (adapt from STooDs): Generate a trace of MCMC samples for all variables
-MCMC parameter plots
+2DO (adapt from STooDs): Generate pdf report files summarizing mcmc samples
 }
 \details{
-2DO (adapt from STooDs): MCMC-based estimation of marginal posterior pdf for each parameter
-MCMC reporting
-
-2DO (adapt from STooDs): Generate pdf report files summarizing mcmc samples
-
 tracePlot
 
 returns a trace plot ggplot (or a list thereof if several columns in sim)
+}
+\examples{
+# Create Monte Carlo samples
+n=1000
+sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+# create density plot for each component
+gs=tracePlot(sim)
 }

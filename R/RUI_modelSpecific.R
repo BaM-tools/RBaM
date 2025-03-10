@@ -10,6 +10,17 @@
 #' @param workspace Character, directory where config and result files are stored.
 #' @param mod model object, the model to be calibrated
 #' @return Nothing: just write config files
+#' @examples
+#' # BaRatin model for a single-control rating curve Y=a(X-b)^c
+#' workspace=tempdir()
+#' mod <- model(ID='BaRatin',nX=1,nY=1,
+#'              par=list(parameter('a',10,prior.dist='LogNormal',prior.par=c(log(10),0.1)),
+#'                       parameter('b',-1,prior.dist='Gaussian',prior.par=c(-1,1)),
+#'                       parameter('c',5/3,prior.dist='Gaussian',prior.par=c(5/3,0.05))),
+#'              xtra=xtraModelInfo(object=matrix(1,nrow=1,ncol=1)))
+#' writeConfig.xtra(workspace,mod)
+#' @noRd
+#' @keywords internal
 writeConfig.xtra<-function(workspace,mod){
   ID=mod$ID
   x=mod$xtra$object
@@ -108,8 +119,8 @@ writeConfig.xtra<-function(workspace,mod){
     txt<-toString_engine(val,comments)
     quickWrite(txt,workspace,fname)
     # Write zKmin and zKmoy data frames to files
-    write.table(x$zKmin,file=x$zFileKmin,row.names=FALSE)
-    write.table(x$zKmoy,file=x$zFileKmoy,row.names=FALSE)
+    utils::write.table(x$zKmin,file=x$zFileKmin,row.names=FALSE)
+    utils::write.table(x$zKmoy,file=x$zFileKmoy,row.names=FALSE)
   }
 }
 

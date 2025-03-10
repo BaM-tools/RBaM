@@ -40,3 +40,13 @@ A data frame containing the cooked mcmc samples.
 \description{
 Read raw MCMC samples, return cooked (burnt & sliced) ones
 }
+\examples{
+# Create Monte Carlo samples and write them to file
+n=4000
+sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+workspace=tempdir()
+write.table(sim,file=file.path(workspace,'MCMC.txt'),row.names=FALSE)
+# Read file, burn the first half and keep every other row
+M=readMCMC(file=file.path(workspace,'MCMC.txt'),burnFactor=0.5,slimFactor=2)
+dim(M)
+}

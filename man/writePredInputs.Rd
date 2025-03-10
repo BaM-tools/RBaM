@@ -16,6 +16,8 @@ nothing - just write to files.
 Write input data of the prediction into files
 }
 \examples{
-pred=prediction(X=twoPopulations[,1:3],spagFiles=c('P1.spag','P2.spag'))
+temp=tempdir()
+pred=prediction(X=twoPopulations[,1:3],spagFiles=c('P1.spag','P2.spag'),
+                data.dir=temp)
 writePredInputs(pred)
 }

@@ -89,10 +89,11 @@ getAwPfromBathy <- function(bathy,
 #' @param ... arguments passed to function `download.file`
 #' @return nothing - just download the file.
 #' @examples
-#'   downloadBam(destFolder=tempdir())
+#'   try(downloadBaM(destFolder=tempdir()))
 #' @export
 #' @importFrom rjson fromJSON
-downloadBam <- function(url=NULL,os=Sys.info()['sysname'],
+#' @importFrom utils download.file unzip
+downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
                         destFolder=file.path(find.package('RBaM'),'bin'),
                         quiet=FALSE,...){
   if(is.null(os)){stop('Unrecognized OS',call.=FALSE)}
@@ -133,7 +134,7 @@ downloadBam <- function(url=NULL,os=Sys.info()['sysname'],
   }
   filename <- basename(url)
   tdir=tempdir()
-  ok=download.file(url,destfile=file.path(tdir,filename),...)
+  ok=utils::download.file(url,destfile=file.path(tdir,filename),...)
   if(ok != 0){
     mess=paste0('Unable to download BaM exe zip file at url: ',url,'...')
     stop(mess,call.=FALSE)
@@ -152,7 +153,6 @@ downloadBam <- function(url=NULL,os=Sys.info()['sysname'],
     message('----------------')
     message('BaM executable was successfully dowloaded in folder: ',destFolder)
     message(' ')
-
   }
 }
 

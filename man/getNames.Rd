@@ -2,8 +2,7 @@
 % Please edit documentation in R/RUI.R
 \name{getNames}
 \alias{getNames}
-\title{getNames from an object or a list of objects having a $name field
-(e.g. parameters)}
+\title{Get object names}
 \usage{
 getNames(loo, name = "name")
 }
@@ -13,9 +12,14 @@ getNames(loo, name = "name")
 \item{name}{character, string denoting the name field}
 }
 \value{
-A character vector containg names
+A character vector containing names
 }
 \description{
-getNames from an object or a list of objects having a $name field
-(e.g. parameters)
+getNames from an object or a list of objects having a $name field (e.g. parameters)
+}
+\examples{
+pars <- list(parameter(name='par1',init=0),
+             parameter(name='par2',init=0),
+             parameter(name='Third parameter',init=0))
+getNames(pars)
 }

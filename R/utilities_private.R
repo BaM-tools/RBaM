@@ -107,3 +107,14 @@ runExe<-function(exedir,exename){
   setwd(saveWD) # move back to initial working directory
   return(res)
 }
+
+#*******************************************************************************
+#' Was BaM executable found?
+#' @param exedir directory where the executable should be searched
+#' @param exename name of the executable
+#' @return a logical, TRUE if the exe was found, false otherwise
+#' @keywords internal
+foundBaM <- function(exedir,exename){
+  out=file.exists(file.path(exedir,exename)) |
+    file.exists(file.path(exedir,paste0(exename,'.exe')))
+}

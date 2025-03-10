@@ -61,5 +61,6 @@ Creates a new instance of a 'dataset' object
 \examples{
 X=data.frame(input1=rnorm(100),input2=rnorm(100))
 Y=data.frame(output=X$input1+0.8*X$input2+0.1*rnorm(100))
-d <- dataset(X=X,Y=Y,data.dir=getwd())
+workspace=tempdir()
+d <- dataset(X=X,Y=Y,data.dir=workspace)
 }

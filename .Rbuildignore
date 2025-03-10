@@ -3,3 +3,8 @@
 ^vignettes/BaM_workspace$
 ^data-raw$
 ^logo.svg$
+^vignettes
+^BaM_workspace
+^README\.Rmd$
+^cran-comments\.md$
+^CRAN-SUBMISSION$

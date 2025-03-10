@@ -6,9 +6,9 @@
 #'
 #' @param fname Character, configuration file name.
 #' @param funk Character, function f used in remnant sdev = f(Ysim).
-#'   Available: 'Constant','Linear' (default), 'Exponential', 'Gaussian'.
+#'   Available: 'Constant', 'Proportional', 'Linear' (default), 'Exponential', 'Gaussian'.
 #' @param par list of parameter objects, parameters of the function above.
-#'   respectively, npar= 1,2,3,3
+#'   respectively, npar= 1,1,2,3,3
 #' @return An object of class 'remnantErrorModel'.
 #' @examples
 #' r <- remnantErrorModel()

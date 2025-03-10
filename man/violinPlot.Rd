@@ -19,3 +19,10 @@ A ggplot
 \description{
 returns a violinplot ggplot
 }
+\examples{
+# Create Monte Carlo samples
+n=1000
+sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+# create density plot for each component
+g=violinPlot(sim)
+}

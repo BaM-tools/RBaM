@@ -31,7 +31,7 @@
 #' @param envFiles Character vector (size nY, the number of output variables). Name of the files containing the
 #'     envelops (e.g. prediction intervals) computed from the spaghettis for each output variable.
 #'     By default, same name as spaghetti files but with a '.env' extension.
-#'     If NULL, envolps are not computed.
+#'     If NULL, envelops are not computed.
 #' @param consoleProgress Logical, print progress in BaM.exe console?
 #' @param spagFiles_state Character vector (size nState, the number of state variables),
 #'     same as spagFiles but for states rather than outputs. If NULL, states are not predicted.
@@ -135,12 +135,16 @@ toString.prediction<-function(x,...){
 #' @param o prediction object
 #' @return nothing - just write to files.
 #' @examples
-#' pred=prediction(X=twoPopulations[,1:3],spagFiles=c('P1.spag','P2.spag'))
+#' temp=tempdir()
+#' pred=prediction(X=twoPopulations[,1:3],spagFiles=c('P1.spag','P2.spag'),
+#'                 data.dir=temp)
 #' writePredInputs(pred)
 #' @export
+#' @importFrom utils write.table
 writePredInputs<-function(o){
   for(i in 1:length(o$data.files)){
-    utils::write.table(o$X[[i]],sep='\t',quote=FALSE,file=o$data.files[i],
+    utils::write.table(o$X[[i]],sep='\t',quote=FALSE,
+                       file=o$data.files[i],
                        row.names=FALSE,col.names=FALSE)
   }
 }

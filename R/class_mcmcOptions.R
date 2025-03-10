@@ -136,7 +136,7 @@ validate_mcmcOptions<-function(x){
   # thetaStd: >0
   if( any(x$thetaStd <= 0) ){stop("`thetaStd` should be all be strictly positive",call.=FALSE)}
   # gammaStd: >0
-  for(i in 1:length(gammaStd)){
+  for(i in 1:length(x$gammaStd)){
     if( any(x$gammaStd[[i]] <= 0) ){stop("`gammaStd` should be all be strictly positive",call.=FALSE)}
   }
   return(x)

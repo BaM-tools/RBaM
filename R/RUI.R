@@ -26,7 +26,30 @@
 #' @param name.exe Character, name of the executable without extension ('BaM' by default).
 #' @param predMaster_fname Character, name of configuration file pointing to all prediction experiments.
 #' @return Nothing: just write config files and runs the executable.
+#' @examples
+#' # Fitting a rating curve - see https://github.com/BaM-tools/RBaM
+#' workspace=tempdir()
+#' D=dataset(X=SauzeGaugings['H'],Y=SauzeGaugings['Q'],Yu=SauzeGaugings['uQ'],data.dir=workspace)
+#' # Parameters of the low flow section control: activation stage k, coefficient a and exponent c
+#' k1=parameter(name='k1',init=-0.5,prior.dist='Uniform',prior.par=c(-1.5,0))
+#' a1=parameter(name='a1',init=50,prior.dist='LogNormal',prior.par=c(log(50),1))
+#' c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.05))
+#' # Parameters of the high flow channel control: activation stage k, coefficient a and exponent c
+#' k2=parameter(name='k2',init=1,prior.dist='Gaussian',prior.par=c(1,1))
+#' a2=parameter(name='a2',init=100,prior.dist='LogNormal',prior.par=c(log(100),1))
+#' c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.05))
+#' # Define control matrix: columns are controls, rows are stage ranges.
+#' controlMatrix=rbind(c(1,0),c(0,1))
+#' # Stitch it all together into a model object
+#' M=model(ID='BaRatin',
+#'         nX=1,nY=1, # number of input/output variables
+#'         par=list(k1,a1,c1,k2,a2,c2), # list of model parameters
+#'         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
+#' # Call BaM to write configuration files. To actually run BaM, use run=TRUE,
+#' # but BaM executable needs to be downloaded first (use downloadBaM())
+#' BaM(mod=M,data=D,run=FALSE,workspace=workspace)
 #' @export
+#' @importFrom utils write.table
 BaM <- function(mod,data,
                 remnant=rep(list(remnantErrorModel()),mod$nY),
                 mcmc=mcmcOptions(),cook=mcmcCooking(),summary=mcmcSummary(),
@@ -136,12 +159,20 @@ BaM <- function(mod,data,
       invisible(file.copy(from=file.path(workspace,cook$result.fname),
                           to=file.path(workspace,paste0('BACKUP_',cook$result.fname))))
       # overwrite
-      write.table(parSamples,file.path(workspace,cook$result.fname),row.names=FALSE)
+      utils::write.table(parSamples,file.path(workspace,cook$result.fname),row.names=FALSE)
     }
   }
 
   res=0
-  if(run){res=try(runExe(exedir=dir.exe,exename=name.exe))}
+  if(run){
+    ok=foundBaM(exedir=dir.exe,exename=name.exe)
+    if(!ok){
+      message(paste0('BaM executable was not found in folder: ',
+                     dir.exe,'. Call function downloadBaM() to download it.'))
+      return()
+    }
+    res=try(runExe(exedir=dir.exe,exename=name.exe))
+  }
   if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
 
   # If a prediction provides its own parSamples, need to cleanup
@@ -173,6 +204,15 @@ BaM <- function(mod,data,
 #' @param panelHeight Numeric, height of each panel
 #' @param panelWidth Numeric, width of each panel
 #' @return A data frame containing the cooked mcmc samples.
+#' @examples
+#'# Create Monte Carlo samples and write them to file
+#' n=4000
+#' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+#' workspace=tempdir()
+#' write.table(sim,file=file.path(workspace,'MCMC.txt'),row.names=FALSE)
+#' # Read file, burn the first half and keep every other row
+#' M=readMCMC(file=file.path(workspace,'MCMC.txt'),burnFactor=0.5,slimFactor=2)
+#' dim(M)
 #' @export
 readMCMC <- function(file='Results_Cooking.txt',burnFactor=0,slimFactor=1,sep='',
                      reportFile=NULL,
@@ -207,17 +247,6 @@ readMCMC <- function(file='Results_Cooking.txt',burnFactor=0,slimFactor=1,sep=''
 # Plotting functions  ----
 
 #*******************************************************************************
-#' MCMC trace plots
-#'
-#' 2DO (adapt from STooDs): Generate a trace of MCMC samples for all variables
-
-
-#*******************************************************************************
-#' MCMC parameter plots
-#'
-#' 2DO (adapt from STooDs): MCMC-based estimation of marginal posterior pdf for each parameter
-
-#*******************************************************************************
 #' MCMC reporting
 #'
 #' 2DO (adapt from STooDs): Generate pdf report files summarizing mcmc samples
@@ -234,8 +263,15 @@ readMCMC <- function(file='Results_Cooking.txt',burnFactor=0,slimFactor=1,sep=''
 #' @param col Color
 #' @param psize Numeric, point size
 #' @return A ggplot (or a list thereof if several columns in sim)
+#' @examples
+#' # Create Monte Carlo samples
+#' n=1000
+#' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+#' # create density plot for each component
+#' gs=tracePlot(sim)
 #' @export
 #' @import ggplot2
+#' @importFrom rlang .data
 tracePlot <- function(sim,ylab='values',keep=NULL,col='black',psize=0.5){
   p <- NCOL(sim)
   g <- vector("list",p)
@@ -247,9 +283,9 @@ tracePlot <- function(sim,ylab='values',keep=NULL,col='black',psize=0.5){
     g[[i]] <- ggplot()+
       scale_x_continuous('Iteration')+
       scale_y_continuous(yl[i])+
-      geom_line(data=DF,aes(x=x,y=y),col=lcol)
+      geom_line(data=DF,aes(x=.data$x,y=.data$y),col=lcol)
     if(!is.null(keep)){
-      g[[i]] <- g[[i]] + geom_point(data=DF[keep,],aes(x=x,y=y),col=col,size=psize) +
+      g[[i]] <- g[[i]] + geom_point(data=DF[keep,],aes(x=.data$x,y=.data$y),col=col,size=psize) +
         geom_vline(xintercept=keep[1],col='red')
     }
     g[[i]] <- g[[i]] + theme_bw()
@@ -266,8 +302,16 @@ tracePlot <- function(sim,ylab='values',keep=NULL,col='black',psize=0.5){
 #' @param xlab Character, label of x-axis to be used if sim has no names
 #' @param col Color
 #' @return A ggplot (or a list thereof if several columns in sim)
+#' @examples
+#' # Create Monte Carlo samples
+#' n=1000
+#' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+#' # create density plot for each component
+#' gs=densityPlot(sim)
 #' @export
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom stats density
 densityPlot <- function(sim,xlab='values',col='black'){
   p <- NCOL(sim)
   g <- vector("list",p)
@@ -275,10 +319,10 @@ densityPlot <- function(sim,xlab='values',col='black'){
   if(is.null(xl)) {xl <- rep(xlab,p)}
   for(i in 1:p){
     DF <- data.frame(val=as.data.frame(sim)[,i])
-    g[[i]] <- ggplot(DF,aes(val))+
+    g[[i]] <- ggplot(DF,aes(.data$val))+
       scale_x_continuous(xl[i])+
       scale_y_continuous('posterior pdf')+
-      geom_histogram(aes(y=..density..),fill=NA,col='black',
+      geom_histogram(aes(y=after_stat(stats::density)),fill=NA,col='black',
                      binwidth=(max(DF$val)-min(DF$val))/30)+
       geom_density(fill=col,alpha=0.5,col=NA)
 
@@ -296,13 +340,20 @@ densityPlot <- function(sim,xlab='values',col='black'){
 #' @param ylab Character, label of y-axis
 #' @param col Color
 #' @return A ggplot
+#' @examples
+#' # Create Monte Carlo samples
+#' n=1000
+#' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
+#' # create density plot for each component
+#' g=violinPlot(sim)
 #' @export
 #' @import ggplot2
+#' @importFrom rlang .data
 violinPlot <- function(sim,ylab='values',col='black'){
   if (requireNamespace("tidyr",quietly=TRUE)) {
     DF=tidyr::gather(as.data.frame(sim))
     DF$key2 <- stats::reorder(DF$key, 1:NROW(DF)) # avoids violins being re-ordered alphabetically
-    g <- ggplot(DF,aes(x=key2,y=value))+
+    g <- ggplot(DF,aes(x=.data$key2,y=.data$value))+
       geom_violin(fill=col)+
       scale_x_discrete('Index',labels=1:NCOL(sim))+
       scale_y_continuous(ylab)
@@ -363,11 +414,17 @@ getParNames<-function(d){
 # Misc. ----
 
 #*******************************************************************************
-#' getNames from an object or a list of objects having a $name field
-#' (e.g. parameters)
+#' Get object names
+#'
+#' getNames from an object or a list of objects having a $name field (e.g. parameters)
 #' @param loo List Of Objects
 #' @param name character, string denoting the name field
-#' @return A character vector containg names
+#' @return A character vector containing names
+#' @examples
+#' pars <- list(parameter(name='par1',init=0),
+#'              parameter(name='par2',init=0),
+#'              parameter(name='Third parameter',init=0))
+#' getNames(pars)
 #' @export
 getNames<-function(loo,name='name'){
   if(is.null(loo)) {return(NULL)}
@@ -381,8 +438,3 @@ getNames<-function(loo,name='name'){
   }
   return(txt)
 }
-
-#***************************************************************************----
-# Generics ----
-
-#***************************************************************************----
