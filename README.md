@@ -1,5 +1,5 @@
 
-# RBaM - An R user interface to BaM <a href=""><img src="man/readme/logo.png" align="right" height="138" /></a>
+# RBaM - An R user interface to BaM <a href="https://github.com/BaM-tools/RBaM/"><img src="man/readme/logo.png" align="right" height="138" /></a>
 
 ## Introduction
 
@@ -123,8 +123,8 @@ MCMC samples can now be read. There are 2 MCMC files: ‘Results_MCMC.txt’
 contains raw MCMC simulations and is hence quite big.
 ‘Results_Cooking.txt’ contains ‘cooked’ simulations, i.e. after
 ‘burning’ the first part of iterations and ‘slicing’ what remains, and
-may be favored in most cases. Functions `mcmcOptions()` and
-`mcmcCooking()` allow controlling MCMC properties.
+may be favored in most cases. Functions `mcmcOptions` and `mcmcCooking`
+allow controlling MCMC properties.
 
 ``` r
 # Read 'cooked' MCMC file in the workspace

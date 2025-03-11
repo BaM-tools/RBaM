@@ -7,7 +7,7 @@ knitr::opts_chunk$set(echo=TRUE,results='hide',
                       fig.path = "man/readme/README-")
 ```
 
-# RBaM - An R user interface to BaM <a href=""><img src="man/readme/logo.png" align="right" height="138" /></a>
+# RBaM - An R user interface to BaM <a href="https://github.com/BaM-tools/RBaM/"><img src="man/readme/logo.png" align="right" height="138" /></a>
 
 ## Introduction
 
@@ -31,9 +31,11 @@ getCatalogue()
 
 ## An example using the BaRatin rating curve model
 
-A [rating curve](https://en.wikipedia.org/wiki/Rating_curve) is a model linking the water stage $H$ measured at a given point of a river and the discharge $Q$ flowing through it. The elementary rating curve equation has the power-law form Q=a(H-b)<sup>c</sup>, where a, b and c are parameters. Since different hydraulic controls may succeed to each other as the water stage increases, it is frequent to use a piecewise combination of these elementary equations, for instance: Q=a<sub>1</sub>(H-b<sub>1</sub>)<sup>c<sub>1</sub></sup> for k<sub>1</sub> < H < k<sub>2</sub>; Q=a<sub>2</sub>(H-b<sub>2</sub>)<sup>c<sub>2</sub></sup> for H > k<sub>2</sub>, with k<sub>1</sub> and k<sub>2</sub> the activation stages of the first and the second control. We refer to [this article](https://hal.science/hal-00934237) for additional details.
+A [rating curve](https://en.wikipedia.org/wiki/Rating_curve) is a model linking the water stage $H$ measured at a given point of a river and the discharge $Q$ flowing through it. The elementary rating curve equation has the power-law form Q=a(H-b)<sup>c</sup>, where a, b and c are parameters. Since different hydraulic controls may succeed to each other as the water stage increases, it is frequent to use a piecewise combination of these elementary equations, for instance: Q=a<sub>1</sub>(H-b<sub>1</sub>)<sup>c<sub>1</sub></sup> for k<sub>1</sub> < H < k<sub>2</sub>; Q=a<sub>2</sub>(H-b<sub>2</sub>)<sup>c<sub>2</sub></sup> for H > k<sub>2</sub>, with k<sub>1</sub> and k<sub>2</sub> the activation stages of the first and the second control.
+We refer to [this article](https://hal.science/hal-00934237) for additional details.
 
-This example shows how to estimate a rating curve using a set of (H,Q) calibration data (called 'gaugings') from the [Ardèche river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the Sauze-Saint-Martin hydrometric station. The first thing to do is to define the workspace, i.e. the folder where configuration and result files will be written.
+This example shows how to estimate a rating curve using a set of (H,Q) calibration data (called 'gaugings') from the 
+[Ardèche river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the Sauze-Saint-Martin hydrometric station. The first thing to do is to define the workspace, i.e. the folder where configuration and result files will be written.
 
 ```{r}
 workspace=file.path(getwd(),'BaM_workspace')
@@ -76,7 +78,7 @@ All set! The function BaM can now be called to estimate parameters. This will ru
 BaM(mod=M,data=D,workspace=workspace)
 ```
 
-MCMC samples can now be read. There are 2 MCMC files: 'Results_MCMC.txt' contains raw MCMC simulations and is hence quite big. 'Results_Cooking.txt' contains 'cooked' simulations, i.e. after 'burning' the first part of iterations and 'slicing' what remains, and may be favored in most cases. Functions `mcmcOptions()` and `mcmcCooking()` allow controlling MCMC properties.
+MCMC samples can now be read. There are 2 MCMC files: 'Results_MCMC.txt' contains raw MCMC simulations and is hence quite big. 'Results_Cooking.txt' contains 'cooked' simulations, i.e. after 'burning' the first part of iterations and 'slicing' what remains, and may be favored in most cases. Functions `mcmcOptions` and `mcmcCooking` allow controlling MCMC properties.
 
 ```{r results='markup'}
 # Read 'cooked' MCMC file in the workspace
