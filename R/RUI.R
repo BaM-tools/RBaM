@@ -267,8 +267,8 @@ readMCMC <- function(file='Results_Cooking.txt',burnFactor=0,slimFactor=1,sep=''
 #' # Create Monte Carlo samples
 #' n=1000
 #' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
-#' # create density plot for each component
-#' gs=tracePlot(sim)
+#' # create trace plot for each component
+#' figures=tracePlot(sim)
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
@@ -307,7 +307,7 @@ tracePlot <- function(sim,ylab='values',keep=NULL,col='black',psize=0.5){
 #' n=1000
 #' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
 #' # create density plot for each component
-#' gs=densityPlot(sim)
+#' figures=densityPlot(sim)
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
@@ -344,8 +344,8 @@ densityPlot <- function(sim,xlab='values',col='black'){
 #' # Create Monte Carlo samples
 #' n=1000
 #' sim=data.frame(p1=rnorm(n),p2=rlnorm(n),p3=runif(n))
-#' # create density plot for each component
-#' g=violinPlot(sim)
+#' # create violin plot comparing all components
+#' figure=violinPlot(sim)
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data

@@ -111,6 +111,7 @@ downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
                   'or try providing the url of the BaM exe to download through the `url=` argument')
       stop(mess,call.=FALSE)
     }
+    if(length(foo)>1){foo=paste(foo,collapse='')}
     js=rjson::fromJSON(foo)
     tag=js$tag_name
     allAssets=sapply(js$assets,function(x){x$browser_download})

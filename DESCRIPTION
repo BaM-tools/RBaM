@@ -1,34 +1,43 @@
 Package: RBaM
 Type: Package
-Title: Bayesian Modeling: Estimate a Model and Make Uncertain Predictions
+Title: Bayesian Modeling: Estimate a Computer Model and Make Uncertain Predictions
 Version: 1.0.0
 Authors@R: c(
     person("Benjamin", "Renard", email = "benjamin.renard@inrae.fr",role = c("aut", "cre","cph"),comment = c(ORCID = "0000-0001-8447-5430")),
     person("INRAE", role = c("fnd")),
     person("Ministère de la Transition Ecologique - SCHAPI", role = c("fnd")))
-Description: The `BaM` (Bayesian Modeling) utility aims at estimating a model using a
-    Bayesian approach and using it for prediction, with a particular focus
-    on uncertainty quantification. This package is built as an R User Interface
-    to the computational `BaM` engine, which is a `FORTRAN` executable piloted by text configuration files.
-    The package defines classes (objects' properties and methods) for the various building blocks of 
-    `BaM` inference (model, data, error models, MCMC sampling, predictions, etc.).
-    Its typical usage is as follows:
-	(1) specify the model to be estimated; 
-    (2) specify the inference setting (dataset, parameters, error models, MCMC settings);
-	(3) perform Bayesian-MCMC inference;
+Description: An interface to the 'BaM' (Bayesian Modeling) engine, 
+    a 'Fortran'-based executable aimed at estimating a model 
+    with a Bayesian approach and using it for prediction,
+    with a particular focus on uncertainty quantification.
+    Classes are defined for the various building blocks of 
+    'BaM' inference (model, data, error models, MCMC sampling, predictions).
+    The typical usage is as follows:
+    (1) specify the model to be estimated; 
+    (2) specify the inference setting (dataset, parameters, error models...);
+    (3) perform Bayesian-MCMC inference;
     (4) read, analyse and use MCMC samples;
-	(5) perform prediction experiments.
-	Technical details are available (in French) in Renard (2017) <https://hal.science/hal-02606929v1>.
+    (5) perform prediction experiments.
+    Technical details are available (in French) in 
+    Renard (2017) <https://hal.science/hal-02606929v1>.
+    Examples of applications include 
+    Mansanarez et al. (2019) <doi:10.1029/2018WR023389>,
+    Le Coz et al. (2021) <doi:10.1002/hyp.14169>,
+    Perret et al. (2021) <doi:10.1029/2020WR027745>,
+    Darienzo et al. (2021) <doi:10.1029/2020WR028607> and
+    Perret et al. (2023) <doi:10.1061/JHEND8.HYENG-13101>.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/BaM-tools/RBaM
 BugReports: https://github.com/BaM-tools/RBaM/issues
+Depends:
+    R (>= 3.5.0)
 Imports:
     ggplot2,
     R.utils,
-	utils,
-	grDevices,
+    utils,
+    grDevices,
     stats,
     rjson,
     rlang
