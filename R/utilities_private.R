@@ -7,7 +7,7 @@
 #' @param addQuote Logical, ass double quotes to strings?
 #' @return A character vector, ready to be printed of written to file
 #' @keywords internal
-toString_engine<-function(val,comment,addQuote=T){
+toString_engine<-function(val,comment,addQuote=TRUE){
   n=length(val)
   txt=vector("character",n)
   for (i in 1:n){
@@ -53,8 +53,9 @@ addQuotes<-function(txt){
 #' @param fname Character, file name
 #' @return Nothing
 #' @keywords internal
+#' @importFrom utils write.table
 quickWrite <- function(txt,dir,fname){
-  if(!dir.exists(dir)){dir.create(dir,recursive=T)}
+  if(!dir.exists(dir)){dir.create(dir,recursive=TRUE)}
   file=file.path(dir,fname)
   utils::write.table(matrix(txt, ncol = 1, nrow = length(txt)), file = file,
               row.names = FALSE, col.names = FALSE, quote = FALSE)

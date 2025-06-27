@@ -156,7 +156,7 @@ downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
   }
   if(!quiet){
     message('----------------')
-    message('BaM executable was successfully dowloaded in folder: ',destFolder)
+    message('BaM executable was successfully downloaded in folder: ',destFolder)
     message(' ')
   }
 }

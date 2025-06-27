@@ -62,7 +62,7 @@ BaM <- function(mod,data,
 ){
   #oooooooooooooooooooooooooooooooooooooooooo
   # Preliminaries
-  if(preClean){file.remove(list.files(workspace,full.names=T))}
+  if(preClean){file.remove(list.files(workspace,full.names=TRUE))}
   # check length(remnantErrorModel)==mod$nY
 
   #oooooooooooooooooooooooooooooooooooooooooo
@@ -214,11 +214,14 @@ BaM <- function(mod,data,
 #' M=readMCMC(file=file.path(workspace,'MCMC.txt'),burnFactor=0.5,slimFactor=2)
 #' dim(M)
 #' @export
+#' @importFrom utils read.table
+#' @importFrom grDevices pdf dev.off
+#' @importFrom gridExtra grid.arrange
 readMCMC <- function(file='Results_Cooking.txt',burnFactor=0,slimFactor=1,sep='',
                      reportFile=NULL,
                      panelPerCol=10,panelHeight=3,panelWidth=23/panelPerCol){
   # read file
-  raw <- utils::read.table(file,header=T,sep=sep)
+  raw <- utils::read.table(file,header=TRUE,sep=sep)
   n <- NROW(raw);p <- NCOL(raw)
   keep <- seq(max(floor(n*burnFactor),1),n,slimFactor)
   cooked <- raw[keep,]
@@ -349,6 +352,8 @@ densityPlot <- function(sim,xlab='values',col='black'){
 #' @export
 #' @import ggplot2
 #' @importFrom rlang .data
+#' @importFrom tidyr gather
+#' @importFrom stats reorder
 violinPlot <- function(sim,ylab='values',col='black'){
   if (requireNamespace("tidyr",quietly=TRUE)) {
     DF=tidyr::gather(as.data.frame(sim))

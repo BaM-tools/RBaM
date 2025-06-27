@@ -35,15 +35,16 @@ Depends:
     R (>= 3.5.0)
 Imports:
     ggplot2,
+    gridExtra,
     R.utils,
     utils,
     grDevices,
     stats,
     rjson,
-    rlang
+    rlang,
+    tools,
+    tidyr
 Suggests: 
-    gridExtra,
-    tidyr,
     rmarkdown
 RoxygenNote: 7.2.3
 

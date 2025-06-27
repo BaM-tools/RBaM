@@ -4,7 +4,7 @@
 \alias{toString_engine}
 \title{Write value-comment pairs into string vector}
 \usage{
-toString_engine(val, comment, addQuote = T)
+toString_engine(val, comment, addQuote = TRUE)
 }
 \arguments{
 \item{val}{List, object/list of values to be printed}

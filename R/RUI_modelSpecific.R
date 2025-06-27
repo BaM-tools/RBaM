@@ -21,6 +21,7 @@
 #' writeConfig.xtra(workspace,mod)
 #' @noRd
 #' @keywords internal
+#' @importFrom utils write.table
 writeConfig.xtra<-function(workspace,mod){
   ID=mod$ID
   x=mod$xtra$object
