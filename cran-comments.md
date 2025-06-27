@@ -3,7 +3,6 @@
 0 errors | 0 warnings | 1 note
 
 * This is a new release.
-
 Possibly misspelled words in DESCRIPTION:
   Coz (26:8)
   Darienzo (28:5)
