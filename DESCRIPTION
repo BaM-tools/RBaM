@@ -1,7 +1,7 @@
 Package: RBaM
 Type: Package
 Title: Bayesian Modeling: Estimate a Computer Model and Make Uncertain Predictions
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Benjamin", "Renard", email = "benjamin.renard@inrae.fr",role = c("aut", "cre","cph"),comment = c(ORCID = "0000-0001-8447-5430")),
     person("INRAE", role = c("fnd")),
@@ -11,7 +11,7 @@ Description: An interface to the 'BaM' (Bayesian Modeling) engine,
     with a Bayesian approach and using it for prediction,
     with a particular focus on uncertainty quantification.
     Classes are defined for the various building blocks of 
-    'BaM' inference (model, data, error models, MCMC sampling, predictions).
+    'BaM' inference (model, data, error models, Markov Chain Monte Carlo (MCMC) samplers, predictions).
     The typical usage is as follows:
     (1) specify the model to be estimated; 
     (2) specify the inference setting (dataset, parameters, error models...);

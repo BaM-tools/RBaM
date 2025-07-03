@@ -98,6 +98,7 @@ checkFormula<-function(f,namespace){
 #' @keywords internal
 runExe<-function(exedir,exename){
   saveWD <- getwd() # remember current working dir
+  on.exit(setwd(saveWD)) # make sure it will be restored even if the function crashes
   setwd(exedir) # need to set working dir to the exe dir
   os=Sys.info()['sysname'] # determine OS
   cmd=ifelse(os=='Windows',
