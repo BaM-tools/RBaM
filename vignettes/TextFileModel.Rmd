@@ -33,7 +33,7 @@ Let's start by loading the `RBaM` package and define the workspace where config 
 
 ```{r}
 library(RBaM)
-workspace=file.path(getwd(),'BaM_workspace')
+workspace=file.path(tempdir(),'BaM_workspace')
 ```
 
 The model is defined by two formulas, so let's type them as simple strings.
@@ -73,7 +73,7 @@ data=dataset(X=X,Y=Y,data.dir=workspace)
 Model calibration can now be performed by calling the function `BaM`.
 
 ```{r,results='asis'}
-BaM(mod=mod,data=data,workspace=workspace)
+BaM(workspace=workspace,mod=mod,data=data)
 ```
 
 Visualizing MCMC simulations allows verifying that MCMC convergence is satisfying and allows exploring estimated parameters.
@@ -106,7 +106,7 @@ pred=prediction(X=data.frame(t=twoPopulations$t,
                              T2=twoPopulations$T2+2),
                 spagFiles=c('P1_warming.spag','P2_warming.spag'),
                 data.dir=workspace,doParametric=TRUE,doStructural=c(TRUE,TRUE))
-BaM(mod=mod,data=data,workspace=workspace,pred=pred,doCalib=FALSE,doPred=TRUE)
+BaM(workspace=workspace,mod=mod,data=data,pred=pred,doCalib=FALSE,doPred=TRUE)
 ```
 
 The spaghetti resulting from this prediction can be plotted for P2 for instance (gray), and be compared with the population evolution associated with the original temperature series (red). 

@@ -38,7 +38,7 @@ This example shows how to estimate a rating curve using a set of (H,Q) calibrati
 [Ardèche river](https://en.wikipedia.org/wiki/Ardèche_(river)) at the Sauze-Saint-Martin hydrometric station. The first thing to do is to define the workspace, i.e. the folder where configuration and result files will be written.
 
 ```{r}
-workspace=file.path(getwd(),'BaM_workspace')
+workspace=file.path(tempdir(),'BaM_workspace')
 ```
 
 The second step is to define the calibration data. The dataset `SauzeGaugings` is provided with this package, and the code below let RBaM know what to use as inputs/outputs. 
@@ -75,7 +75,7 @@ M=model(ID='BaRatin',
 All set! The function BaM can now be called to estimate parameters. This will run a MCMC sampler and save the result into the workspace.
 
 ```{r results='markup'}
-BaM(mod=M,data=D,workspace=workspace)
+BaM(workspace=workspace,mod=M,data=D)
 ```
 
 MCMC samples can now be read. There are 2 MCMC files: 'Results_MCMC.txt' contains raw MCMC simulations and is hence quite big. 'Results_Cooking.txt' contains 'cooked' simulations, i.e. after 'burning' the first part of iterations and 'slicing' what remains, and may be favored in most cases. Functions `mcmcOptions` and `mcmcCooking` allow controlling MCMC properties.
@@ -124,7 +124,7 @@ paramU=prediction(X=hgrid,spagFiles='paramU.spag',data.dir=workspace,
 maxpost=prediction(X=hgrid,spagFiles='maxpost.spag',data.dir=workspace,
                   doParametric=FALSE,doStructural=FALSE)
 # Re-run BaM, but in prediction mode
-BaM(mod=M,data=D, # model and data
+BaM(workspace=workspace,mod=M,data=D, # model and data
     pred=list(totalU,paramU,maxpost), # list of predictions
     doCalib=FALSE,doPred=TRUE) # Do not re-calibrate but do predictions
 ```

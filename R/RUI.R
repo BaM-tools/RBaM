@@ -6,6 +6,7 @@
 #'
 #' Run BaM.exe
 #'
+#' @param workspace Character, directory where config and result files are stored.
 #' @param mod model object, the model to be calibrated
 #' @param data dataset object, calibration data
 #' @param remnant list of remnantErrorModel objects.
@@ -21,7 +22,6 @@
 #' @param run Logical, run BaM? if FALSE, just write config files.
 #' @param preClean Logical, start by cleaning up workspace?
 #'  Be careful, this will delete all files in the workspace, including old results!
-#' @param workspace Character, directory where config and result files are stored.
 #' @param dir.exe Character, directory where BaM executable stands.
 #' @param name.exe Character, name of the executable without extension ('BaM' by default).
 #' @param predMaster_fname Character, name of configuration file pointing to all prediction experiments.
@@ -47,16 +47,15 @@
 #'         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
 #' # Call BaM to write configuration files. To actually run BaM, use run=TRUE,
 #' # but BaM executable needs to be downloaded first (use downloadBaM())
-#' BaM(mod=M,data=D,run=FALSE,workspace=workspace)
+#' BaM(workspace=workspace,mod=M,data=D,run=FALSE)
 #' @export
 #' @importFrom utils write.table
-BaM <- function(mod,data,
+BaM <- function(workspace,mod,data,
                 remnant=rep(list(remnantErrorModel()),mod$nY),
                 mcmc=mcmcOptions(),cook=mcmcCooking(),summary=mcmcSummary(),
                 residuals=residualOptions(),pred=NULL,
                 doCalib=TRUE,doPred=FALSE,na.value=-9999,
                 run=TRUE,preClean=FALSE,
-                workspace=file.path(getwd(),'BaM_workspace'),
                 dir.exe=file.path(find.package('RBaM'),'bin'),name.exe='BaM',
                 predMaster_fname="Config_Pred_Master.txt"
 ){
@@ -147,7 +146,7 @@ BaM <- function(mod,data,
                'Config file: summary of MCMC samples','Config file: residual analysis',
                'Config file: prediction experiments (master file)')
   txt <- toString_engine(val,comment)
-  quickWrite(txt=txt,dir=dir.exe,fname="Config_BaM.txt")
+  quickWrite(txt=txt,dir=workspace,fname="Config_BaM.txt")
 
   #oooooooooooooooooooooooooooooooooooooooooo
   # Run exe
@@ -171,7 +170,7 @@ BaM <- function(mod,data,
                      dir.exe,'. Call function downloadBaM() to download it.'))
       return()
     }
-    res=try(runExe(exedir=dir.exe,exename=name.exe))
+    res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace))
   }
   if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
 

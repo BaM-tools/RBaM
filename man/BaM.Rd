@@ -5,6 +5,7 @@
 \title{Run BaM}
 \usage{
 BaM(
+  workspace,
   mod,
   data,
   remnant = rep(list(remnantErrorModel()), mod$nY),
@@ -18,13 +19,14 @@ BaM(
   na.value = -9999,
   run = TRUE,
   preClean = FALSE,
-  workspace = file.path(getwd(), "BaM_workspace"),
   dir.exe = file.path(find.package("RBaM"), "bin"),
   name.exe = "BaM",
   predMaster_fname = "Config_Pred_Master.txt"
 )
 }
 \arguments{
+\item{workspace}{Character, directory where config and result files are stored.}
+
 \item{mod}{model object, the model to be calibrated}
 
 \item{data}{dataset object, calibration data}
@@ -52,8 +54,6 @@ WARNING: make sure you use a list of length mod$nY (even if mod$nY=1!)}
 
 \item{preClean}{Logical, start by cleaning up workspace?
 Be careful, this will delete all files in the workspace, including old results!}
-
-\item{workspace}{Character, directory where config and result files are stored.}
 
 \item{dir.exe}{Character, directory where BaM executable stands.}
 
@@ -88,5 +88,5 @@ M=model(ID='BaRatin',
         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
 # Call BaM to write configuration files. To actually run BaM, use run=TRUE,
 # but BaM executable needs to be downloaded first (use downloadBaM())
-BaM(mod=M,data=D,run=FALSE,workspace=workspace)
+BaM(workspace=workspace,mod=M,data=D,run=FALSE)
 }

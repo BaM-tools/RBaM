@@ -24,7 +24,7 @@ This vignette demonstrates how to use such varying (VAR) parameters by means of 
 
 ```{r}
 library(RBaM)
-workspace=file.path(getwd(),'BaM_workspace')
+workspace=file.path(tempdir(),'BaM_workspace')
 ```
 
 # Data
@@ -92,7 +92,7 @@ M=model(ID='BaRatin',
 Model calibration can be performed by calling the function `BaM`.
 
 ```{r,results='asis'}
-BaM(mod=M,data=D,workspace=workspace)
+BaM(workspace=workspace,mod=M,data=D)
 ```
 
 An excerpt of MCMC simulations is shown below, and it illustrates that 5 values (columns), corresponding to the 5 periods, have been estimated for varying parameters `k1` and `k2`. By contrast, a single value is estimated for non-varying parameters (`a1`, `c1`, etc.)
@@ -168,7 +168,7 @@ Finally, function `BaM` can be called in prediction mode to perform computations
 
 ```{r,results='asis'}
 # Re-run BaM, but in prediction mode
-BaM(mod=M_nonVAR,data=D, # model and data
+BaM(workspace=workspace,mod=M_nonVAR,data=D, # workspace, model and data
     pred=list(totalU,paramU,maxpost), # list of predictions
     doCalib=FALSE,doPred=TRUE) # Do not re-calibrate but do predictions
 ```

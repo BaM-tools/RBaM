@@ -48,7 +48,8 @@ getCatalogue()
     ## [23] "SFDTidal_Qmec0"           "SFDTidal_Qmec"           
     ## [25] "SFDTidal_Qmec2"           "TidalODE"                
     ## [27] "TidalRemenieras"          "SFDTidal_Sw_correction"  
-    ## [29] "MAGE"                     "HydraulicControl_section"
+    ## [29] "MAGE"                     "MAGE_TEMP"               
+    ## [31] "HydraulicControl_section"
 
 ## An example using the BaRatin rating curve model
 
@@ -74,7 +75,7 @@ define the workspace, i.e. the folder where configuration and result
 files will be written.
 
 ``` r
-workspace=file.path(getwd(),'BaM_workspace')
+workspace=file.path(tempdir(),'BaM_workspace')
 ```
 
 The second step is to define the calibration data. The dataset
@@ -116,7 +117,7 @@ All set! The function BaM can now be called to estimate parameters. This
 will run a MCMC sampler and save the result into the workspace.
 
 ``` r
-BaM(mod=M,data=D,workspace=workspace)
+BaM(workspace=workspace,mod=M,data=D)
 ```
 
 MCMC samples can now be read. There are 2 MCMC files: ‘Results_MCMC.txt’
@@ -191,7 +192,7 @@ paramU=prediction(X=hgrid,spagFiles='paramU.spag',data.dir=workspace,
 maxpost=prediction(X=hgrid,spagFiles='maxpost.spag',data.dir=workspace,
                   doParametric=FALSE,doStructural=FALSE)
 # Re-run BaM, but in prediction mode
-BaM(mod=M,data=D, # model and data
+BaM(workspace=workspace,mod=M,data=D, # model and data
     pred=list(totalU,paramU,maxpost), # list of predictions
     doCalib=FALSE,doPred=TRUE) # Do not re-calibrate but do predictions
 ```

@@ -2,19 +2,21 @@
 % Please edit documentation in R/utilities_private.R
 \name{runExe}
 \alias{runExe}
-\title{Run an executable file}
+\title{Run BaM executable}
 \usage{
-runExe(exedir, exename)
+runExe(exedir, exename, workspace)
 }
 \arguments{
 \item{exedir}{directory of the executable}
 
 \item{exename}{name of the executable}
+
+\item{workspace}{full path to workspace}
 }
 \value{
 an error code (0 for success)
 }
 \description{
-Run an executable file
+Run BaM executable
 }
 \keyword{internal}

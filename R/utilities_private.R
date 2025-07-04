@@ -91,12 +91,13 @@ checkFormula<-function(f,namespace){
 }
 
 #*******************************************************************************
-#' Run an executable file
+#' Run BaM executable
 #' @param exedir directory of the executable
 #' @param exename name of the executable
+#' @param workspace full path to workspace
 #' @return an error code (0 for success)
 #' @keywords internal
-runExe<-function(exedir,exename){
+runExe<-function(exedir,exename,workspace){
   saveWD <- getwd() # remember current working dir
   on.exit(setwd(saveWD)) # make sure it will be restored even if the function crashes
   setwd(exedir) # need to set working dir to the exe dir
@@ -105,7 +106,9 @@ runExe<-function(exedir,exename){
              paste0(exename,'.exe'), # Windows command
              paste0('./',exename) # Linux command
   )
-  res=system2(cmd, stdout = "",input=" ") # run exe
+  configFile=file.path(workspace,'Config_BaM.txt')
+  args=paste('--config', addQuotes(configFile))
+  res=system2(cmd, args, stdout = "",input=" ") # run exe
   setwd(saveWD) # move back to initial working directory
   return(res)
 }
