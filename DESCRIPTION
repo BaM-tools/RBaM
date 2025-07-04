@@ -32,7 +32,7 @@ LazyData: true
 URL: https://github.com/BaM-tools/RBaM
 BugReports: https://github.com/BaM-tools/RBaM/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.0.0)
 Imports:
     ggplot2,
     gridExtra,
