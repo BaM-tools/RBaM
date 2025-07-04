@@ -5,22 +5,21 @@
 \title{BaM downloader}
 \usage{
 downloadBaM(
+  destFolder,
   url = NULL,
   os = Sys.info()["sysname"],
-  destFolder = file.path(find.package("RBaM"), "bin"),
   quiet = FALSE,
   ...
 )
 }
 \arguments{
-\item{url}{character string, the url where BaM should be downloaded.
+\item{destFolder}{character string, folder where BaM executable will be downloaded.}
+
+\item{url}{character string, the url from which BaM should be downloaded.
 When NULL, the url is determined automatically by using GitHub API to determine
 the latest release and the file corresponding to the OS.}
 
 \item{os}{character string, operating system, e.g. 'Linux', 'Windows' or 'Darwin'.}
-
-\item{destFolder}{character string, folder where BaM executable will be downloaded.
-By default the `bin` folder in RBaM installation directory.}
 
 \item{quiet}{logical, if TRUE, suppress status messages.}
 

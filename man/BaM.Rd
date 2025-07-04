@@ -19,7 +19,7 @@ BaM(
   na.value = -9999,
   run = TRUE,
   preClean = FALSE,
-  dir.exe = file.path(find.package("RBaM"), "bin"),
+  dir.exe = .BAM_PATH,
   name.exe = "BaM",
   predMaster_fname = "Config_Pred_Master.txt"
 )

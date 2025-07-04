@@ -79,12 +79,11 @@ getAwPfromBathy <- function(bathy,
 #'
 #' Download BaM executable
 #'
-#' @param url character string, the url where BaM should be downloaded.
+#' @param destFolder character string, folder where BaM executable will be downloaded.
+#' @param url character string, the url from which BaM should be downloaded.
 #'     When NULL, the url is determined automatically by using GitHub API to determine
 #'     the latest release and the file corresponding to the OS.
 #' @param os character string, operating system, e.g. 'Linux', 'Windows' or 'Darwin'.
-#' @param destFolder character string, folder where BaM executable will be downloaded.
-#'     By default the `bin` folder in RBaM installation directory.
 #' @param quiet logical, if TRUE, suppress status messages.
 #' @param ... arguments passed to function `download.file`
 #' @return nothing - just download the file.
@@ -93,8 +92,7 @@ getAwPfromBathy <- function(bathy,
 #' @export
 #' @importFrom rjson fromJSON
 #' @importFrom utils download.file unzip
-downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
-                        destFolder=file.path(find.package('RBaM'),'bin'),
+downloadBaM <- function(destFolder,url=NULL,os=Sys.info()['sysname'],
                         quiet=FALSE,...){
   if(is.null(os)){stop('Unrecognized OS',call.=FALSE)}
   if(is.null(url)){
@@ -153,11 +151,40 @@ downloadBaM <- function(url=NULL,os=Sys.info()['sysname'],
   if(is.null(ok)){
     mess=paste0('Unable to extract BaM exe from zip file')
     stop(mess,call.=FALSE)
+  } else {
+    # save destFolder in config file
+    setPathToBaM(destFolder,quiet=TRUE)
   }
   if(!quiet){
     message('----------------')
     message('BaM executable was successfully downloaded in folder: ',destFolder)
+    message('Please restart a new R session before further using RBaM.')
     message(' ')
   }
 }
 
+#*******************************************************************************
+#' Path to BaM
+#'
+#' Set path to BaM executable
+#'
+#' @param dir.exe character string, folder where BaM executable is located.
+#' @param quiet logical, if TRUE, suppress status messages.
+#' @return nothing - just write a config file.
+#' @examples
+#'   setPathToBaM(dir.exe=tempdir())
+#' @export
+#' @importFrom tools R_user_dir
+setPathToBaM <- function(dir.exe,quiet=FALSE){
+  # Determine folder where config file can be written in accordance with CRAN rules
+  dir.config=tools::R_user_dir(package="RBaM",which="config")
+  if(!dir.exists(dir.config)){dir.create(dir.config,recursive=TRUE)}
+  # Write config file
+  fname=file.path(dir.config,'pathToBaM.txt')
+  writeLines(text=dir.exe,con=fname)
+  if(!quiet){
+    message('----------------')
+    message('Path to BaM executable has been set.')
+    message('Please restart a new R session for the change to take effect.')
+  }
+}

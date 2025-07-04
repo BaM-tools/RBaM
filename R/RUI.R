@@ -56,7 +56,7 @@ BaM <- function(workspace,mod,data,
                 residuals=residualOptions(),pred=NULL,
                 doCalib=TRUE,doPred=FALSE,na.value=-9999,
                 run=TRUE,preClean=FALSE,
-                dir.exe=file.path(find.package('RBaM'),'bin'),name.exe='BaM',
+                dir.exe=.BAM_PATH,name.exe='BaM',
                 predMaster_fname="Config_Pred_Master.txt"
 ){
   #oooooooooooooooooooooooooooooooooooooooooo
@@ -166,8 +166,8 @@ BaM <- function(workspace,mod,data,
   if(run){
     ok=foundBaM(exedir=dir.exe,exename=name.exe)
     if(!ok){
-      message(paste0('BaM executable was not found in folder: ',
-                     dir.exe,'. Call function downloadBaM() to download it.'))
+      message(paste0('BaM executable was not found in folder: ',dir.exe,
+                     '. Call function downloadBaM("destination/folder/on/your/computer") to download it.'))
       return()
     }
     res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace))
