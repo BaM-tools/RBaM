@@ -5,8 +5,8 @@ This is a resubmission. In this version:
 * I explained the acronym MCMC when first used in the DESCRIPTION text.
 * I used an immediate call of on.exit() to reset the working directory to its initial value in function runExe().
 * I removed default paths in writing functions BaM() and downloadBaM(), so that these paths are now explicitly defined by the user. I modified doc, examples and README accordingly.
-* As a consequence of the previous change, I used tools::R_user_dir() to define the config folder where I could persistently store a user-defined installation path. This information is stored in a very small single-line text file.
-* I implemented a new function setPathToBaM() to modify the user-defined installation path above.
+* As a consequence of the previous change, I am now using tools::R_user_dir() to determine the configuration folder where I can persistently store a user-defined installation path. This information is stored in a very small single-line configuration text file.
+* I implemented a new function setPathToBaM() enabling the user to modify the configuration file above, or to delete the configuration folder altogether (using setPathToBaM(NULL)).
 * I added a dependency to R (>= 4.0.0) in the DESCRIPTION file, due to the use of tools::R_user_dir()
 * I increased the package version from 1.0.0 to 1.0.1.
 

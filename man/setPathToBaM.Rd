@@ -7,7 +7,10 @@
 setPathToBaM(dir.exe, quiet = FALSE)
 }
 \arguments{
-\item{dir.exe}{character string, folder where BaM executable is located.}
+\item{dir.exe}{character string, folder where BaM executable is located. A NULL
+value resets BaM directory to 'unknown' by removing the config folder where it was
+stored on your computer
+(use 'tools::R_user_dir(package="RBaM",which="config")' to locate this folder).}
 
 \item{quiet}{logical, if TRUE, suppress status messages.}
 }

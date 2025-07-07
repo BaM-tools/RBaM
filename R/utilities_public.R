@@ -168,7 +168,10 @@ downloadBaM <- function(destFolder,url=NULL,os=Sys.info()['sysname'],
 #'
 #' Set path to BaM executable
 #'
-#' @param dir.exe character string, folder where BaM executable is located.
+#' @param dir.exe character string, folder where BaM executable is located. A NULL
+#'     value resets BaM directory to 'unknown' by removing the config folder where it was
+#'     stored on your computer
+#'     (use 'tools::R_user_dir(package="RBaM",which="config")' to locate this folder).
 #' @param quiet logical, if TRUE, suppress status messages.
 #' @return nothing - just write a config file.
 #' @examples
@@ -178,13 +181,25 @@ downloadBaM <- function(destFolder,url=NULL,os=Sys.info()['sysname'],
 setPathToBaM <- function(dir.exe,quiet=FALSE){
   # Determine folder where config file can be written in accordance with CRAN rules
   dir.config=tools::R_user_dir(package="RBaM",which="config")
-  if(!dir.exists(dir.config)){dir.create(dir.config,recursive=TRUE)}
-  # Write config file
-  fname=file.path(dir.config,'pathToBaM.txt')
-  writeLines(text=dir.exe,con=fname)
-  if(!quiet){
-    message('----------------')
-    message('Path to BaM executable has been set.')
-    message('Please restart a new R session for the change to take effect.')
+  if(is.null(dir.exe)){
+    if(dir.exists(dir.config)){
+      unlink(dir.config,recursive=TRUE)
+      if(!quiet){
+        message('----------------')
+        message('The following configuration folder has been deleted:')
+        message(dir.config)
+        message('Path to BaM executable has now an "unknown" status.')
+      }
+    }
+  } else {
+    if(!dir.exists(dir.config)){dir.create(dir.config,recursive=TRUE)}
+    # Write config file
+    fname=file.path(dir.config,'pathToBaM.txt')
+    writeLines(text=dir.exe,con=fname)
+    if(!quiet){
+      message('----------------')
+      message('Path to BaM executable has been set.')
+      message('Please restart a new R session for the change to take effect.')
+    }
   }
 }

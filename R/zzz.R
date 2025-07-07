@@ -15,16 +15,16 @@
   if(is.null(exedir)){
     ok=FALSE
     mess=paste0('Path to BaM executable has not been defined yet.',
-                '\nIf BaM exe is already installed on your computer, use ',
-                'setPathToBaM("path/to/BaM/on/your/computer") ',
+                '\nIf BaM executable is already installed on your computer, use ',
+                'setPathToBaM("folder/containing/BaM/on/your/computer") ',
                 'to define its location.',
                 '\nOtherwise use downloadBaM("destination/folder/on/your/computer") ',
                 'to download it now.')
   } else {
     ok=foundBaM(exedir=exedir,exename='BaM')
-    mess=paste0('BaM executable was not found in the directory: ',exedir,
-                '\nTo update BaM exe location, use setPathToBaM("path/to/BaM/on/your/computer").',
-                '\nTo re-download BaM exe in this directory, use downloadBaM("',exedir,'")')
+    mess=paste0('BaM executable was not found in the folder: ',exedir,
+                '\nTo update BaM location, use setPathToBaM("folder/containing/BaM/on/your/computer").',
+                '\nTo re-download BaM executable in this folder, use downloadBaM("',exedir,'")')
   }
   if(!ok){
     packageStartupMessage('Welcome to RBaM!')
