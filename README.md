@@ -1,6 +1,8 @@
 
 # RBaM - An R user interface to BaM <a href="https://github.com/BaM-tools/RBaM/"><img src="man/readme/logo.png" align="right" height="138" /></a>
 
+[![DOI](https://zenodo.org/badge/368480115.svg)](https://doi.org/10.5281/zenodo.15856646)
+
 ## Introduction
 
 BaM (Bayesian Modeling) is a framework to estimate a model using
@@ -15,7 +17,6 @@ building blocks of a BaM case study. Its typical usage is as follows:
 4.  Perform predictions.
 
 ``` r
-# devtools::install_github('BaM-tools/RBaM') # First use: install the package from GitHub
 library(RBaM) # Load package
 ```
 
