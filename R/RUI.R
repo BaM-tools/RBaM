@@ -25,6 +25,9 @@
 #' @param dir.exe Character, directory where BaM executable stands.
 #' @param name.exe Character, name of the executable without extension ('BaM' by default).
 #' @param predMaster_fname Character, name of configuration file pointing to all prediction experiments.
+#' @param stout Character string, standard output (see ?system2).
+#'     In particular, stout="" (default) shows BaM messages in the console,
+#'     stout=NULL discards BaM messages, stout='log.txt' saves BaM messages in file "log.txt".
 #' @return Nothing: just write config files and runs the executable.
 #' @examples
 #' # Fitting a rating curve - see https://github.com/BaM-tools/RBaM
@@ -57,7 +60,8 @@ BaM <- function(workspace,mod,data,
                 doCalib=TRUE,doPred=FALSE,na.value=-9999,
                 run=TRUE,preClean=FALSE,
                 dir.exe=.BAM_PATH,name.exe='BaM',
-                predMaster_fname="Config_Pred_Master.txt"
+                predMaster_fname="Config_Pred_Master.txt",
+                stout=""
 ){
   #oooooooooooooooooooooooooooooooooooooooooo
   # Preliminaries
@@ -170,7 +174,7 @@ BaM <- function(workspace,mod,data,
                      '. Call function downloadBaM("destination/folder/on/your/computer") to download it.'))
       return()
     }
-    res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace))
+    res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace,stout=stout))
   }
   if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
 
@@ -203,9 +207,9 @@ BaM <- function(workspace,mod,data,
 #'  Be careful, this will delete all files in the workspace, including old results!
 #' @param dir.exe Character, directory where BaM executable stands.
 #' @param name.exe Character, name of the executable without extension ('BaM' by default).
-#' @param stdout Character string, standard output (see ?system2).
-#'     In particular, stdout="" (default) shows BaM messages in the console,
-#'     stdout=NULL discards BaM messages, stdout='log.txt' saves BaM messages in file "log.txt".
+#' @param stout Character string, standard output (see ?system2).
+#'     In particular, stout="" (default) shows BaM messages in the console,
+#'     stout=NULL discards BaM messages, stout='log.txt' saves BaM messages in file "log.txt".
 #' @param Inputs_fname Character, name of configuration file used to specify the format of X.
 #' @param X_fname Character, name of file containing a copy of X.
 #' @param Y_fname Character, name of file where simulations are written.
@@ -237,7 +241,7 @@ runModel <- function(workspace,mod,X,
                      na.value=-666.666,
                      run=TRUE,preClean=FALSE,
                      dir.exe=.BAM_PATH,name.exe='BaM',
-                     stdout="",
+                     stout="",
                      Inputs_fname='Config_Inputs.txt',
                      X_fname='X.txt',Y_fname='Y.txt'){
   #oooooooooooooooooooooooooooooooooooooooooo
@@ -288,7 +292,7 @@ runModel <- function(workspace,mod,X,
               '--onerun',
               addQuotes(Y_fname))
     res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace,
-                   arguments=arg,stdout=stdout))
+                   arguments=arg,stout=stout))
     if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
     Y=read.table(file=file.path(workspace,Y_fname),header=TRUE)
     Y[Y==na.value]=NA

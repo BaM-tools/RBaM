@@ -21,7 +21,8 @@ BaM(
   preClean = FALSE,
   dir.exe = .BAM_PATH,
   name.exe = "BaM",
-  predMaster_fname = "Config_Pred_Master.txt"
+  predMaster_fname = "Config_Pred_Master.txt",
+  stout = ""
 )
 }
 \arguments{
@@ -60,6 +61,10 @@ Be careful, this will delete all files in the workspace, including old results!}
 \item{name.exe}{Character, name of the executable without extension ('BaM' by default).}
 
 \item{predMaster_fname}{Character, name of configuration file pointing to all prediction experiments.}
+
+\item{stout}{Character string, standard output (see ?system2).
+In particular, stout="" (default) shows BaM messages in the console,
+stout=NULL discards BaM messages, stout='log.txt' saves BaM messages in file "log.txt".}
 }
 \value{
 Nothing: just write config files and runs the executable.

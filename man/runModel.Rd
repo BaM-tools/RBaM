@@ -13,7 +13,7 @@ runModel(
   preClean = FALSE,
   dir.exe = .BAM_PATH,
   name.exe = "BaM",
-  stdout = "",
+  stout = "",
   Inputs_fname = "Config_Inputs.txt",
   X_fname = "X.txt",
   Y_fname = "Y.txt"
@@ -38,9 +38,9 @@ Be careful, this will delete all files in the workspace, including old results!}
 
 \item{name.exe}{Character, name of the executable without extension ('BaM' by default).}
 
-\item{stdout}{Character string, standard output (see ?system2).
-In particular, stdout="" (default) shows BaM messages in the console,
-stdout=NULL discards BaM messages, stdout='log.txt' saves BaM messages in file "log.txt".}
+\item{stout}{Character string, standard output (see ?system2).
+In particular, stout="" (default) shows BaM messages in the console,
+stout=NULL discards BaM messages, stout='log.txt' saves BaM messages in file "log.txt".}
 
 \item{Inputs_fname}{Character, name of configuration file used to specify the format of X.}
 

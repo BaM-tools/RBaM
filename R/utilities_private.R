@@ -96,13 +96,13 @@ checkFormula<-function(f,namespace){
 #' @param exename Character string, name of the executable
 #' @param workspace Character string, full path to workspace
 #' @param arguments Character string, arguments to be passed to BaM exe
-#' @param stdout Character string, standard output (see ?system2).
-#' In particular, stdout="" (default) shows BaM messages in the console,
-#' stdout=NULL discards BaM messages,
-#' stdout='log.txt' saves BaM messages in file "log.txt".
+#' @param stout Character string, standard output (see ?system2).
+#' In particular, stout="" (default) shows BaM messages in the console,
+#' stout=NULL discards BaM messages,
+#' stout='log.txt' saves BaM messages in file "log.txt".
 #' @return an error code (0 for success)
 #' @keywords internal
-runExe<-function(exedir,exename,workspace,arguments=NULL,stdout=""){
+runExe<-function(exedir,exename,workspace,arguments=NULL,stout=""){
   saveWD <- getwd() # remember current working dir
   on.exit(setwd(saveWD)) # make sure it will be restored even if the function crashes
   setwd(exedir) # need to set working dir to the exe dir
@@ -117,7 +117,7 @@ runExe<-function(exedir,exename,workspace,arguments=NULL,stdout=""){
   } else {
     arg=arguments
   }
-  res=system2(cmd, arg, stdout = stdout,input=" ") # run exe
+  res=system2(cmd, arg, stdout = stout,input=" ") # run exe
   setwd(saveWD) # move back to initial working directory
   return(res)
 }
