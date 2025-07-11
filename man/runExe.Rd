@@ -4,14 +4,21 @@
 \alias{runExe}
 \title{Run BaM executable}
 \usage{
-runExe(exedir, exename, workspace)
+runExe(exedir, exename, workspace, arguments = NULL, stdout = "")
 }
 \arguments{
-\item{exedir}{directory of the executable}
+\item{exedir}{Character string, directory of the executable}
 
-\item{exename}{name of the executable}
+\item{exename}{Character string, name of the executable}
 
-\item{workspace}{full path to workspace}
+\item{workspace}{Character string, full path to workspace}
+
+\item{arguments}{Character string, arguments to be passed to BaM exe}
+
+\item{stdout}{Character string, standard output (see ?system2).
+In particular, stdout="" (default) shows BaM messages in the console,
+stdout=NULL discards BaM messages,
+stdout='log.txt' saves BaM messages in file "log.txt".}
 }
 \value{
 an error code (0 for success)
