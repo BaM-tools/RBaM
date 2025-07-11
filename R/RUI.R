@@ -188,6 +188,116 @@ BaM <- function(workspace,mod,data,
 }
 
 #*******************************************************************************
+#' Run Model
+#'
+#' Perform a single run of a model, using the initial values specified for the
+#' model's parameters.
+#'
+#' @param workspace Character, directory where config and result files are stored.
+#'     workspace = tempdir() is recommended.
+#' @param mod model object, the model to be run.
+#' @param X data frame, containing the inputs of the model
+#' @param na.value numeric, value used by BaM to denote impossible runs, that will be changed to NA in RBaM.
+#' @param run Logical, run the model? if FALSE, just write config files and returns NULL.
+#' @param preClean Logical, start by cleaning up workspace?
+#'  Be careful, this will delete all files in the workspace, including old results!
+#' @param dir.exe Character, directory where BaM executable stands.
+#' @param name.exe Character, name of the executable without extension ('BaM' by default).
+#' @param stdout Character string, standard output (see ?system2).
+#'     In particular, stdout="" (default) shows BaM messages in the console,
+#'     stdout=NULL discards BaM messages, stdout='log.txt' saves BaM messages in file "log.txt".
+#' @param Inputs_fname Character, name of configuration file used to specify the format of X.
+#' @param X_fname Character, name of file containing a copy of X.
+#' @param Y_fname Character, name of file where simulations are written.
+#' @return A data frame containing the outputs simulated by the model.
+#' @examples
+#' # Rating curve model - see https://github.com/BaM-tools/RBaM
+#' # Parameters of the low flow section control: activation stage k, coefficient a and exponent c
+#' k1=parameter(name='k1',init=-0.5)
+#' a1=parameter(name='a1',init=50)
+#' c1=parameter(name='c1',init=1.5)
+#' # Parameters of the high flow channel control: activation stage k, coefficient a and exponent c
+#' k2=parameter(name='k2',init=1)
+#' a2=parameter(name='a2',init=100)
+#' c2=parameter(name='c2',init=1.67)
+#' # Define control matrix: columns are controls, rows are stage ranges.
+#' controlMatrix=rbind(c(1,0),c(0,1))
+#' # Stitch it all together into a model object
+#' M=model(ID='BaRatin',
+#'         nX=1,nY=1, # number of input/output variables
+#'         par=list(k1,a1,c1,k2,a2,c2), # list of model parameters
+#'         xtra=xtraModelInfo(object=controlMatrix)) # use xtraModelInfo() to pass the control matrix
+#' # Define the model input
+#' X=data.frame(stage=seq(-1,7,0.1))
+#' # Write the config files used to run the model. To actually run it,
+#' # use run=TRUE, but BaM executable needs to be downloaded first (use downloadBaM())
+#' runModel(workspace=tempdir(),mod=M,X=X,run=FALSE)
+#' @export
+runModel <- function(workspace,mod,X,
+                     na.value=-666.666,
+                     run=TRUE,preClean=FALSE,
+                     dir.exe=.BAM_PATH,name.exe='BaM',
+                     stdout="",
+                     Inputs_fname='Config_Inputs.txt',
+                     X_fname='X.txt',Y_fname='Y.txt'){
+  #oooooooooooooooooooooooooooooooooooooooooo
+  # Preliminaries
+  if(preClean){file.remove(list.files(workspace,full.names=TRUE))}
+  # check length(remnantErrorModel)==mod$nY
+
+  #oooooooooooooooooooooooooooooooooooooooooo
+  # Write config files
+  quickWrite(toString(mod),workspace,mod$fname)
+  writeConfig.xtra(workspace,mod)
+  Xf=file.path(workspace,X_fname)
+  # - ADD HEADERS
+  utils::write.table(X,sep='\t',quote=FALSE,file=Xf,col.names=FALSE,row.names=FALSE)
+  value=list(normalizePath(Xf),0,nrow(X),ncol(X))
+  # XXX
+  comment=c(
+    'Full path to data file',
+    'number of header lines',
+    'Nobs, number of rows in data file (excluding header lines)',
+    'number of columns in data file'
+  )
+  txt<-toString_engine(value,comment)
+  quickWrite(txt,workspace,Inputs_fname)
+
+  #oooooooooooooooooooooooooooooooooooooooooo
+  # General controller
+  val <- list(paste0(normalizePath(workspace),.Platform$file.sep),
+              mod$fname,mod$xtra$fname,Inputs_fname)
+  comment <- c('Workspace','Config file: model',
+               'Config file: xtra model information',
+               'Config file: Input Data')
+  txt <- toString_engine(val,comment)
+  quickWrite(txt=txt,dir=workspace,fname="Config_BaM.txt")
+
+  #oooooooooooooooooooooooooooooooooooooooooo
+  # Run exe
+  res=0
+  if(run){
+    ok=foundBaM(exedir=dir.exe,exename=name.exe)
+    if(!ok){
+      message(paste0('BaM executable was not found in folder: ',dir.exe,
+                     '. Call function downloadBaM("destination/folder/on/your/computer") to download it.'))
+      return()
+    }
+    arg=paste('--config',
+              addQuotes(file.path(workspace,'Config_BaM.txt')),
+              '--onerun',
+              addQuotes(Y_fname))
+    res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace,
+                   arguments=arg,stdout=stdout))
+    if(res!=0){stop('BaM executable crashed with error code: ',res,call.=FALSE)}
+    Y=read.table(file=file.path(workspace,Y_fname),header=TRUE)
+    Y[Y==na.value]=NA
+  } else {Y=NULL}
+  return(Y)
+}
+
+
+#*******************************************************************************
 #' MCMC Reader
 #'
 #' Read raw MCMC samples, return cooked (burnt & sliced) ones
