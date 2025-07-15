@@ -43,7 +43,8 @@ Imports:
     rjson,
     rlang,
     tools,
-    tidyr
+    tidyr,
+    mvtnorm
 Suggests: 
     rmarkdown
 RoxygenNote: 7.2.3
