@@ -1,5 +1,4 @@
 library(RBaM)
-# setPathToBaM('/home/benjamin.renard/BEN/GitHub/BaM/makefile/')
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example of using function runModel() ----
