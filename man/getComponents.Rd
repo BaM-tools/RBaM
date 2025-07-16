@@ -4,13 +4,15 @@
 \alias{getComponents}
 \title{Get Inference Components}
 \usage{
-getComponents(obj)
+getComponents(obj, returnYsim = FALSE)
 }
 \arguments{
 \item{obj}{object, object to be cast.}
+
+\item{returnYsim}{boolean, return Ysim if available ?}
 }
 \value{
-A 1-row data frame with fields logPosterior, logPrior and logLikelihood
+A 1-row data frame with fields logPosterior, logPrior, logLikelihood and Ysim
 }
 \description{
 Function ensuring that the result of the log-posterior evaluation returns
