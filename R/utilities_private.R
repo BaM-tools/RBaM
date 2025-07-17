@@ -112,7 +112,7 @@ runExe<-function(exedir,exename,workspace,arguments=NULL,stout=""){
              paste0('./',exename) # Linux command
   )
   configFile=file.path(workspace,'Config_BaM.txt')
-  if(is.null(args)){
+  if(is.null(arguments)){
     arg=paste('--config', addQuotes(configFile))
   } else {
     arg=arguments
