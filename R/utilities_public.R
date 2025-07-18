@@ -203,3 +203,24 @@ setPathToBaM <- function(dir.exe,quiet=FALSE){
     }
   }
 }
+
+#' Bloc-diagonal matrix constructor
+#'
+#' This function creates a square bloc-diagonal matrix from a list of square blocs.
+#'
+#' @param blocs list, each element is a square matrix.
+#' @return A square matrix.
+#' @examples
+#' blocDiag(list(1,cbind(c(1,2),c(3,4)),25))
+#' @export
+blocDiag <- function(blocs){
+  n=sum(sapply(blocs,NROW))
+  M=diag(1,n,n)
+  k=0
+  for(i in 1:length(blocs)){
+    p=NROW(blocs[[i]])
+    M[(k+1):(k+p),(k+1):(k+p)]=blocs[[i]]
+    k=k+p
+  }
+  return(M)
+}
