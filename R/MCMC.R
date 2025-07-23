@@ -51,13 +51,13 @@ MCMC_AM <- function(logPdf,x0,
                     ...){
   # Set up
   D=length(x0)
-  params=data.frame(matrix(NA,nAdapt*nCycles+1,D))
-  if(!is.null(names(x0))){names(params) <- names(x0)}
+  samples=data.frame(matrix(NA,nAdapt*nCycles+1,D))
+  if(!is.null(names(x0))){names(samples) <- names(x0)}
   comps=data.frame(matrix(NA,nAdapt*nCycles+1,3)) # components: post, prior, lkh
   names(comps) <- c('logPosterior','logPrior','logLikelihood')
   # Starting value and posterior
   k=1
-  params[k,]=x0
+  samples[k,]=x0
   fx=getComponents(logPdf(x0,...))
   if(is.infinite(fx$logPosterior) | is.na(fx$logPosterior)){
     stop('logPdf(x0) is -Inf or NA.',call.=FALSE)
@@ -74,12 +74,12 @@ MCMC_AM <- function(logPdf,x0,
     move=rep(FALSE,nAdapt)
     for(i in 1:nAdapt){
       k=k+1
-      candid=as.numeric(params[k-1,])+jumps[i,]
+      candid=as.numeric(samples[k-1,])+jumps[i,]
       fcandid=getComponents(logPdf(candid,...))
       # Apply Metropolis rule
-      foo=applyMetropolisRule(x=params[k-1,],candid=candid,fx=fx,fcandid=fcandid)
+      foo=applyMetropolisRule(x=samples[k-1,],candid=candid,fx=fx,fcandid=fcandid)
       fx=foo$fx
-      params[k,]=foo$x
+      samples[k,]=foo$x
       comps[k,]=foo$fx[1:3]
       move[i]=foo$move
     }
@@ -96,14 +96,14 @@ MCMC_AM <- function(logPdf,x0,
     nval=k-n0+1
     if(nval>nmin){ # enough values to update Cov
       ix=unique(as.integer(seq(n0,k,length.out=min(nval,nmax))))
-      vars=apply(params[ix,],2,var)
-      if(min(vars)>0) {C=cov(params[ix,])}
+      vars=apply(samples[ix,],2,var)
+      if(min(vars)>0) {C=cov(samples[ix,])}
     } else if (nval>(D*dofCovMin)){ # enough values to estimate a diagonal Cov
-      vars=apply(params[n0:k,],2,var)
+      vars=apply(samples[n0:k,],2,var)
       if(min(vars)>0) {C=diag(vars)}
     }
   }
-  return(list(samples=params,components=comps,C=C,scaleFactor=scaleFactor))
+  return(list(samples=samples,components=comps,C=C,scaleFactor=scaleFactor))
 }
 
 #' Adaptive One-At-A-Time Metropolis sampler
@@ -150,15 +150,15 @@ MCMC_OAAT <- function(logPdf,x0,s0=0.05*(abs(x0)+0.1),nTheta=length(x0),
                       ...){
   # Set up
   D=length(x0)
-  params=data.frame(matrix(NA,nAdapt*nCycles+1,D))
-  if(!is.null(names(x0))){names(params) <- names(x0)}
+  samples=data.frame(matrix(NA,nAdapt*nCycles+1,D))
+  if(!is.null(names(x0))){names(samples) <- names(x0)}
   comps=data.frame(matrix(NA,nAdapt*nCycles+1,3)) # components: post, prior, lkh
   names(comps) <- c('logPosterior','logPrior','logLikelihood')
   # Starting value and posterior
   logPdfArgs=names(formals(MCMC_AM)) # list of arguments of logPdf function
   returnYsim= ('Ysim' %in% logPdfArgs) & (nTheta<D) # return Ysim to implement speed-up for gammas
   k=1
-  params[k,]=x0
+  samples[k,]=x0
   if(returnYsim){
     fx=getComponents(logPdf(x0,...),returnYsim=TRUE)
   } else {
@@ -189,7 +189,7 @@ MCMC_OAAT <- function(logPdf,x0,s0=0.05*(abs(x0)+0.1),nTheta=length(x0),
         move[d]=move[d]+as.integer(foo$move)
       }
       k=k+1
-      params[k,]=x
+      samples[k,]=x
       comps[k,]=fx[1:3]
     }
     # Adapt scale factor
@@ -202,7 +202,7 @@ MCMC_OAAT <- function(logPdf,x0,s0=0.05*(abs(x0)+0.1),nTheta=length(x0),
       }
     }
   }
-  return(list(samples=params,components=comps,sjump=sjump))
+  return(list(samples=samples,components=comps,sjump=sjump))
 }
 
 
