@@ -15,8 +15,8 @@
 #'     nCycles=1 leads to the standard non-adaptive Metropolis sampler.
 #' @param minMoveRate numeric in (0;1), lower bound for the desired move rate interval.
 #' @param maxMoveRate numeric in (0;1), upper bound for the desired move rate interval.
-#' @param downMult numeric in (0;1), multiplication factor used to decrease scaleFactor when move rate is too low.
-#' @param upMult numeric (>1, avoid 1/downMult) multiplication factor used to increase scaleFactor when move rate is too high.
+#' @param downMult numeric in (0;1), multiplicative factor used to decrease scaleFactor when move rate is too low.
+#' @param upMult numeric (>1, avoid 1/downMult) multiplicative factor used to increase scaleFactor when move rate is too high.
 #' @param burnCov numeric in (0;1), fraction of initial values to be discarded before computing the empirical covariance of
 #'     sampled vectors, which is used to adapt the jump covariance.
 #' @param dofCovMin integer, minimum number of degrees of freedom required to compute the empirical covariance of

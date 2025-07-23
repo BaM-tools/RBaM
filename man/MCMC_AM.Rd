@@ -41,9 +41,9 @@ nCycles=1 leads to the standard non-adaptive Metropolis sampler.}
 
 \item{maxMoveRate}{numeric in (0;1), upper bound for the desired move rate interval.}
 
-\item{downMult}{numeric in (0;1), multiplication factor used to decrease scaleFactor when move rate is too low.}
+\item{downMult}{numeric in (0;1), multiplicative factor used to decrease scaleFactor when move rate is too low.}
 
-\item{upMult}{numeric (>1, avoid 1/downMult) multiplication factor used to increase scaleFactor when move rate is too high.}
+\item{upMult}{numeric (>1, avoid 1/downMult) multiplicative factor used to increase scaleFactor when move rate is too high.}
 
 \item{burnCov}{numeric in (0;1), fraction of initial values to be discarded before computing the empirical covariance of
 sampled vectors, which is used to adapt the jump covariance.}

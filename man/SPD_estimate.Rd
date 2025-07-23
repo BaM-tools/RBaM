@@ -108,7 +108,7 @@ pars=list(b1,a1,c1,b2,a2,c2,b3,a3,c3)
 deltaPars=list(b1=c(0,0.25),a1=c(0,0.2),b2=c(0,0.5))
 periods=list(b1=MeyrasGaugings$Period,a1=c(rep(1,49),rep(2,55)),b2=MeyrasGaugings$Period)
 # Run BaM and estimate SPD parameters
-mcmcOpt=mcmcOptions(nAdapt=20,nCycles=25) # small number of iterations to make the example run quickly.
+mcmcOpt=mcmcOptions(nAdapt=20,nCycles=25) # only few iterations so that the example runs fast.
 mcmc=SPD_estimate(workspace=tempdir(),controlMatrix=controlMatrix,pars=pars,
                   bVAR=bVAR,aVAR=aVAR,deltaPars=deltaPars,periods=periods,
                   H=H,Q=Q,uQ=uQ,mcmcOpt=mcmcOpt)
