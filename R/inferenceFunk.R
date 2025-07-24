@@ -1,4 +1,22 @@
 #***************************************************************************----
+# Log-prior functions  ----
+
+#*******************************************************************************
+#' Log-prior function: improper flat prior
+#'
+#' Computes the log-density of an improper flat prior distribution.
+#'
+#' @param parvector numeric vector, parameter vector, including thetas (model parameters)
+#'     and gammas (structural errors parameters).
+#' @return A numeric value equal to the prior log-density.
+#' @examples
+#' logPrior_Flat(c(1,1,0.2))
+#' @export
+logPrior_Flat <- function(parvector){
+  return(0.)
+}
+
+#***************************************************************************----
 # Log-likelihood functions  ----
 
 #*******************************************************************************
