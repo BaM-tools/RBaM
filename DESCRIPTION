@@ -44,7 +44,8 @@ Imports:
     rlang,
     tools,
     tidyr,
-    mvtnorm
+    mvtnorm,
+    progress
 Suggests: 
     rmarkdown
 RoxygenNote: 7.2.3

@@ -44,6 +44,7 @@
 #' @export
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom stats cov var
+#' @importFrom progress progress_bar
 MCMC_AM <- function(logPdf,x0,
                     C0=diag((0.01*(abs(x0)+0.1))^2),scaleFactor=2.4/sqrt(length(x0)),
                     nAdapt=50,nCycles=20,minMoveRate=0.2,maxMoveRate=0.5,downMult=0.9,upMult=1.1,
@@ -69,10 +70,12 @@ MCMC_AM <- function(logPdf,x0,
   nmin=nelement*dofCovMin
   nmax=max(nmin,nCovMax)
   # Start iterations
+  pb=progress::progress_bar$new(total=nCycles*nAdapt,format = "[:bar] :percent done, eta: :eta")
   for(j in 1:nCycles){
     jumps=mvtnorm::rmvnorm(n=nAdapt,mean=rep(0,D),sigma=(scaleFactor^2)*C)
     move=rep(FALSE,nAdapt)
     for(i in 1:nAdapt){
+      pb$tick()
       k=k+1
       candid=as.numeric(samples[k-1,])+jumps[i,]
       fcandid=getComponents(logPdf(candid,...))
@@ -145,6 +148,7 @@ MCMC_AM <- function(logPdf,x0,
 #' plot(mcmc$samples)
 #' @export
 #' @importFrom stats rnorm
+#' @importFrom progress progress_bar
 MCMC_OAAT <- function(logPdf,x0,s0=0.05*(abs(x0)+0.1),nTheta=length(x0),
                       nAdapt=50,nCycles=20,minMoveRate=0.2,maxMoveRate=0.5,downMult=0.9,upMult=1.1,
                       ...){
@@ -171,9 +175,11 @@ MCMC_OAAT <- function(logPdf,x0,s0=0.05*(abs(x0)+0.1),nTheta=length(x0),
   x=x0
   sjump=s0
   # Start iterations
+  pb=progress::progress_bar$new(total=nCycles*nAdapt,format = "[:bar] :percent done, eta: :eta")
   for(j in 1:nCycles){
     move=rep(0,D)
     for(i in 1:nAdapt){
+      pb$tick()
       for(d in 1:D){
         candid=x;candid[d]=x[d]+rnorm(1,0,sjump[d])
         if(returnYsim){
