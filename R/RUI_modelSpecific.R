@@ -158,6 +158,35 @@ writeConfig.xtra<-function(workspace,mod){
     utils::write.table(x$zKmin,file=x$zFileKmin,row.names=FALSE)
     utils::write.table(x$zKmoy,file=x$zFileKmoy,row.names=FALSE)
   }
+  # MAGE_ZQV: xtra$object is a named list, xtra$object = list(exeFile=...,version=...,mageDir=...,repFile=...,zKmin=...,zFileKmin=...,doExpKmin=...,zKmoy=...,zFileKmoy=...,doExpKmoy=...), with components:
+  # exeFile [string]: full path to MAGE executable
+  # version [string]: MAGE version
+  # mageDir [string vector]: full path to MAGE project directories (one per event).
+  # repFile [string]: Name of the .REP file (located in MAGE project directories - file name only, not full path)
+  # zKmin [dataframe]: [n*p] design matrix for computing Kmin. The [n*1] values passed to MAGE through the .RUG file are computed by the matrix product zKmin*theta , where theta is the [p*1] parameter vector seen and estimated by BaM
+  # zFileKmin [string]: File (full path) where zKmin will be written
+  # doExpKmin [logical]: if TRUE, use an exponential transformation to ensure positivity, i.e. Kmin=exp(Z*theta)
+  # zKmoy, zFileKmoy, doExpKmoy: same as the 3 lines above, but for Kmoy instead of Kmin
+   if(ID=='MAGE_ZQV'){
+    val=list(x$exeFile,x$version,x$mageDir,x$repFile,
+             x$zFileKmin,NCOL(x$zKmin),x$doExpKmin,
+             x$zFileKmoy,NCOL(x$zKmoy),x$doExpKmoy)
+    comments=c('Mage executable (full path)',
+               'MAGE version',
+               'MAGE Project directories (full path), one per vent',
+               'REP file (located in MAGE project directory - file name only, not full path)',
+               'Z file (full path) containing covariates for the regression Kmin(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
+               'number of columns p in Z file',
+               'apply exponential transformation to computed Kmins to ensure positivity?',
+               'Z file (full path) containing covariates for the regression Kmoy(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
+               'number of columns p in Z file',
+               'apply exponential transformation to computed Kmoys to ensure positivity?')
+    txt<-toString_engine(val,comments)
+    quickWrite(txt,workspace,fname)
+    # Write zKmin and zKmoy data frames to files
+    utils::write.table(x$zKmin,file=x$zFileKmin,row.names=FALSE)
+    utils::write.table(x$zKmoy,file=x$zFileKmoy,row.names=FALSE)
+  }
 }
 
 #*******************************************************************************
@@ -190,7 +219,7 @@ getCatalogue<-function(printOnly=FALSE){
            'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4',
            'SFDTidal_Qmec0','SFDTidal_Qmec','SFDTidal_Qmec2',
            'TidalODE','TidalRemenieras','SFDTidal_Sw_correction',
-           'MAGE','MAGE_TEMP','HydraulicControl_section')
+           'MAGE','MAGE_TEMP','MAGE_ZQV','HydraulicControl_section')
   if(printOnly){
     message('DISTRIBUTIONS:')
     print(dist)
