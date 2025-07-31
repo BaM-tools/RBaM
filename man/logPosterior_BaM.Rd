@@ -13,7 +13,8 @@ logPosterior_BaM(
   llfunk,
   mod,
   Ysim = NULL,
-  logLikelihood_engine = logLikelihood_BaM
+  logLikelihood_engine = logLikelihood_BaM,
+  llargs = NULL
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ hence not run. This is useful to speed-up some MCMC strategies.}
 \item{logLikelihood_engine}{function, engine function used to compute the log-likelihood, see e.g. \link[RBaM]{logLikelihood_BaM}.
 Unlike functions llfunk, which computes the log-likelihood from model-simulated values Ysim (see e.g. \link[RBaM]{llfunk_iid_Gaussian},
 logLikelihood_engine computes the log-likelihood from (parameters + inputs X + model mod).}
+
+\item{llargs}{object, any other arguments to be passed to llfunk.}
 }
 \value{
 A list with the following components:

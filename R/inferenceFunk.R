@@ -110,6 +110,7 @@ llfunk_iLinear_Gaussian <- function(Ysim,Yobs,Yu,gamma){
 #' @param Ysim data frame, model-simulated values. When NULL (default), the model is run to provide simulations.
 #'     When a non-NULL data frame is provided, it is used as pre-computed simulations, and the model is
 #'     hence not run. This is useful to speed-up some MCMC strategies.
+#' @param llargs object, any other arguments to be passed to llfunk.
 #' @return A list with the following components:
 #'     \item{logLikelihood}{numeric, the log-likelihood.}
 #'     \item{Ysim}{data frame, the model-simulated values.}
@@ -136,7 +137,7 @@ llfunk_iLinear_Gaussian <- function(Ysim,Yobs,Yu,gamma){
 #' logLikelihood_BaM(parvector=parvector,X=X,Yobs=Yobs,Yu=Yu,
 #'                   llfunk=llfunk_iLinear_Gaussian,mod=M)
 #' @export
-logLikelihood_BaM <- function(parvector,X,Yobs,Yu,llfunk,mod,Ysim=NULL){
+logLikelihood_BaM <- function(parvector,X,Yobs,Yu,llfunk,mod,Ysim=NULL,llargs=NULL){
   # separate parvector into theta and gamma
   n=length(mod$par);D=length(parvector)
   theta=parvector[1:n] # model parameters
@@ -149,7 +150,11 @@ logLikelihood_BaM <- function(parvector,X,Yobs,Yu,llfunk,mod,Ysim=NULL){
   if(any(is.na(Ysim)) | is.null(Ysim)){
     return(list(logLikelihood=-Inf,Ysim=Ysim))
   }
-  ll=llfunk(Ysim,Yobs,Yu,gamma)
+  if(is.null(llargs)){
+    ll=llfunk(Ysim,Yobs,Yu,gamma)
+  } else {
+    ll=llfunk(Ysim,Yobs,Yu,gamma,llargs)
+  }
   return(list(logLikelihood=ll,Ysim=Ysim))
 }
 
@@ -175,6 +180,7 @@ logLikelihood_BaM <- function(parvector,X,Yobs,Yu,llfunk,mod,Ysim=NULL){
 #' @param logLikelihood_engine function, engine function used to compute the log-likelihood, see e.g. \link[RBaM]{logLikelihood_BaM}.
 #' Unlike functions llfunk, which computes the log-likelihood from model-simulated values Ysim (see e.g. \link[RBaM]{llfunk_iid_Gaussian},
 #' logLikelihood_engine computes the log-likelihood from (parameters + inputs X + model mod).
+#' @param llargs object, any other arguments to be passed to llfunk.
 #' @return A list with the following components:
 #'     \item{logPosterior}{numeric, the unnormalized posterior log-pdf.}
 #'     \item{logPrior}{numeric, the prior log-pdf.}
@@ -206,7 +212,7 @@ logLikelihood_BaM <- function(parvector,X,Yobs,Yu,llfunk,mod,Ysim=NULL){
 #'                  lpfunk=myPrior,llfunk=llfunk_iLinear_Gaussian,mod=M)
 #' @export
 logPosterior_BaM <- function(parvector,X,Yobs,Yu,lpfunk,llfunk,mod,
-                             Ysim=NULL,logLikelihood_engine=logLikelihood_BaM){
+                             Ysim=NULL,logLikelihood_engine=logLikelihood_BaM,llargs=NULL){
   # start with the prior to exit early and cheaply if parvector is prior-incompatible
   prior=lpfunk(parvector)
   if(is.infinite(prior)){
@@ -214,7 +220,7 @@ logPosterior_BaM <- function(parvector,X,Yobs,Yu,lpfunk,llfunk,mod,
   }
   # finish
   lik=logLikelihood_engine(parvector=parvector,X=X,Yobs=Yobs,Yu=Yu,mod=mod,
-                           llfunk=llfunk,Ysim=Ysim)
+                           llfunk=llfunk,Ysim=Ysim,llargs=llargs)
   post=prior+lik$logLikelihood
   return(list(logPosterior=post,logPrior=prior,logLikelihood=lik$logLikelihood,Ysim=lik$Ysim))
 }
@@ -255,8 +261,8 @@ logPosterior_BaM <- function(parvector,X,Yobs,Yu,lpfunk,llfunk,mod,
 #'                  lpfunk=myPrior,llfunk=llfunk_iLinear_Gaussian,mod=M)
 #' @export
 logPosterior_BaM_wrapped <- function(parvector,X,Yobs,Yu,lpfunk,llfunk,mod,
-                                 Ysim=NULL,logLikelihood_engine=logLikelihood_BaM){
+                                 Ysim=NULL,logLikelihood_engine=logLikelihood_BaM,llargs=NULL){
   foo=logPosterior_BaM(parvector=parvector,X=X,Yobs=Yobs,Yu=Yu,lpfunk=lpfunk,llfunk=llfunk,mod=mod,
-                       Ysim=Ysim,logLikelihood_engine=logLikelihood_engine)
+                       Ysim=Ysim,logLikelihood_engine=logLikelihood_engine,llargs=llargs)
   return(foo$logPosterior)
 }

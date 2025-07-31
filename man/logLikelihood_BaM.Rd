@@ -4,7 +4,16 @@
 \alias{logLikelihood_BaM}
 \title{BaM log-likelihood}
 \usage{
-logLikelihood_BaM(parvector, X, Yobs, Yu, llfunk, mod, Ysim = NULL)
+logLikelihood_BaM(
+  parvector,
+  X,
+  Yobs,
+  Yu,
+  llfunk,
+  mod,
+  Ysim = NULL,
+  llargs = NULL
+)
 }
 \arguments{
 \item{parvector}{numeric vector, parameter vector, including thetas (model parameters)
@@ -23,6 +32,8 @@ and gammas (structural errors parameters).}
 \item{Ysim}{data frame, model-simulated values. When NULL (default), the model is run to provide simulations.
 When a non-NULL data frame is provided, it is used as pre-computed simulations, and the model is
 hence not run. This is useful to speed-up some MCMC strategies.}
+
+\item{llargs}{object, any other arguments to be passed to llfunk.}
 }
 \value{
 A list with the following components:
