@@ -20,11 +20,42 @@ BaM (Bayesian Modeling) is a framework to estimate a model using Bayesian infere
 3. Perform Bayesian-MCMC inference.
 4. Perform predictions.
 
-```{r message=FALSE}
-library(RBaM) # Load package
+
+## Installation
+
+You can install the latest stable version from [CRAN](https://CRAN.R-project.org/package=RBaM) [recommended] with:
+
+```{r message=FALSE, eval=FALSE}
+install.packages('RBaM')
 ```
 
-The catalogue of distributions and models that are available in RBaM can be accessed as follows:
+or the development version from [Github](https://github.com/BaM-tools/RBaM) [may be unstable] with:
+
+```{r message=FALSE, eval=FALSE}
+devtools::install_github('BaM-tools/RBaM')
+```
+
+The package can then be loaded with:
+
+```{r message=FALSE}
+library(RBaM) 
+```
+
+If this is the first time you're using `RBaM`, you need to link it with the `BaM` executable. There are two ways of doing this:
+
+1. [recommended] Download the latest stable version of `BaM` executable as follows:
+
+```{r message=FALSE, eval=FALSE}
+downloadBaM(destination_folder_on_your_computer)
+```
+
+2. If you already have a version of `BaM` executable on your computer, you may link it with `RBaM` as follows:
+
+```{r message=FALSE, eval=FALSE}
+setPathToBaM(folder_containing_BaM_on_your_computer)
+```
+
+All set! The catalog of distributions and models that are available in RBaM can be accessed as follows:
 
 ```{r results='markup'}
 getCatalogue()
@@ -89,20 +120,20 @@ head(MCMC)
 
 A few functions are provided with the package to explore MCMC samples.
 
-```{r fig.height=6, fig.width=9}
+```{r tracePlot, fig.height=6, fig.width=9}
 # Trace plot for each parameter, useful to assess convergence.
 plots=tracePlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
 
-```{r fig.height=6, fig.width=9}
+```{r densityPlot, fig.height=6, fig.width=9}
 # Density plot for each parameter
 plots=densityPlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
 
 
-```{r fig.height=3, fig.width=6}
+```{r violinPlot, fig.height=3, fig.width=6}
 # Violon plot, useful to compare 'comparable' parameters.
 violinPlot(MCMC[c('c1','c2')])
 ```
@@ -132,7 +163,7 @@ BaM(workspace=workspace,mod=M,data=D, # model and data
 
 The resulting 'spaghetti files' can be read into the workspace and plotted. 
 
-```{r fig.height=6, fig.width=9}
+```{r RC_spag, fig.height=6, fig.width=9}
 # Plot spaghetti representing total uncertainty in red
 Q=read.table(file.path(workspace,'totalU.spag'))
 matplot(hgrid$H,Q,col='red',type='l',lty=1)
@@ -146,7 +177,7 @@ matplot(hgrid$H,Q,col='black',type='l',lty=1,add=TRUE)
 
 Spaghetti are the raw outputs of the predictions, but it is often more convenient to plot probability intervals only. These have been computed automatically by BaM, and are saved in files with an '.env' (like 'envelop') extension.
 
-```{r fig.height=6, fig.width=9}
+```{r RC_env, fig.height=6, fig.width=9}
 Q=read.table(file.path(workspace,'totalU.env'),header=T)
 matplot(hgrid$H,Q[,2:3],col='red',type='l',lty=1)
 Q=read.table(file.path(workspace,'paramU.env'),header=T)

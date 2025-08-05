@@ -16,12 +16,47 @@ building blocks of a BaM case study. Its typical usage is as follows:
 3.  Perform Bayesian-MCMC inference.
 4.  Perform predictions.
 
+## Installation
+
+You can install the latest stable version from
+[CRAN](https://CRAN.R-project.org/package=RBaM) \[recommended\] with:
+
 ``` r
-library(RBaM) # Load package
+install.packages('RBaM')
 ```
 
-The catalogue of distributions and models that are available in RBaM can
-be accessed as follows:
+or the development version from
+[Github](https://github.com/BaM-tools/RBaM) \[may be unstable\] with:
+
+``` r
+devtools::install_github('BaM-tools/RBaM')
+```
+
+The package can then be loaded with:
+
+``` r
+library(RBaM) 
+```
+
+If this is the first time you’re using `RBaM`, you need to link it with
+the `BaM` executable. There are two ways of doing this:
+
+1.  \[recommended\] Download the latest stable version of `BaM`
+    executable as follows:
+
+``` r
+downloadBaM(destination_folder_on_your_computer)
+```
+
+2.  If you already have a version of `BaM` executable on your computer,
+    you may link it with `RBaM` as follows:
+
+``` r
+setPathToBaM(folder_containing_BaM_on_your_computer)
+```
+
+All set! The catalog of distributions and models that are available in
+RBaM can be accessed as follows:
 
 ``` r
 getCatalogue()
@@ -50,7 +85,7 @@ getCatalogue()
     ## [25] "SFDTidal_Qmec2"           "TidalODE"                
     ## [27] "TidalRemenieras"          "SFDTidal_Sw_correction"  
     ## [29] "MAGE"                     "MAGE_TEMP"               
-    ## [31] "HydraulicControl_section"
+    ## [31] "MAGE_ZQV"                 "HydraulicControl_section"
 
 ## An example using the BaRatin rating curve model
 
@@ -157,7 +192,7 @@ plots=tracePlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
 
-![](man/readme/README-unnamed-chunk-8-1.png)<!-- -->
+![](man/readme/README-tracePlot-1.png)<!-- -->
 
 ``` r
 # Density plot for each parameter
@@ -165,14 +200,14 @@ plots=densityPlot(MCMC)
 gridExtra::grid.arrange(grobs=plots,ncol=3)
 ```
 
-![](man/readme/README-unnamed-chunk-9-1.png)<!-- -->
+![](man/readme/README-densityPlot-1.png)<!-- -->
 
 ``` r
 # Violon plot, useful to compare 'comparable' parameters.
 violinPlot(MCMC[c('c1','c2')])
 ```
 
-![](man/readme/README-unnamed-chunk-10-1.png)<!-- -->
+![](man/readme/README-violinPlot-1.png)<!-- -->
 
 Finally, the estimated rating curve model can be used to make
 predictions as shown below.
@@ -213,7 +248,7 @@ Q=read.table(file.path(workspace,'maxpost.spag'))
 matplot(hgrid$H,Q,col='black',type='l',lty=1,add=TRUE)
 ```
 
-![](man/readme/README-unnamed-chunk-12-1.png)<!-- -->
+![](man/readme/README-RC_spag-1.png)<!-- -->
 
 Spaghetti are the raw outputs of the predictions, but it is often more
 convenient to plot probability intervals only. These have been computed
@@ -229,4 +264,4 @@ Q=read.table(file.path(workspace,'maxpost.spag'))
 matplot(hgrid$H,Q,col='black',type='l',lty=1,add=TRUE)
 ```
 
-![](man/readme/README-unnamed-chunk-13-1.png)<!-- -->
+![](man/readme/README-RC_env-1.png)<!-- -->
