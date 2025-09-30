@@ -178,6 +178,7 @@ SPD_estimate <-function(workspace,controlMatrix,pars,
   corlist=c(corlist,rep(1,length(remnant$par)))
   # Transform corlist into correlation matrix
   cormat=blocDiag(corlist)
+  if(!dir.exists(workspace)){dir.create(workspace,recursive=TRUE)}
   write.table(cormat,file=file.path(workspace,'PriorCorrelation.txt'),
               row.names=FALSE,col.names=FALSE)
 

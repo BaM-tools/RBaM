@@ -22,11 +22,11 @@ aVAR=c(TRUE, FALSE, FALSE) # a for first control (a1) is VAR
 b1=parameter(name='b1',init=-0.6,prior.dist='Gaussian',prior.par=c(-0.6,0.5))
 a1=parameter(name='a1',init=exp(2.65),prior.dist='LogNormal',prior.par=c(2.65,0.35))
 c1=parameter(name='c1',init=1.5,prior.dist='Gaussian',prior.par=c(1.5,0.025))
-b2=parameter(name='b2',init=0,prior.dist='Gaussian',prior.par=c(-0.6,0.5))
+b2=parameter(name='b2',init=0,prior.dist='Gaussian',prior.par=c(0,0.5))
 a2=parameter(name='a2',init=exp(3.28),prior.dist='LogNormal',prior.par=c(3.28,0.33))
 c2=parameter(name='c2',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
 b3=parameter(name='b3',init=1.2,prior.dist='Gaussian',prior.par=c(1.2,0.2))
-a3=parameter(name='a3',init=exp(3.48),prior.dist='LogNormal',prior.par=c(3.46,0.38))
+a3=parameter(name='a3',init=exp(3.46),prior.dist='LogNormal',prior.par=c(3.46,0.38))
 c3=parameter(name='c3',init=1.67,prior.dist='Gaussian',prior.par=c(1.67,0.025))
 pars=list(b1,a1,c1,b2,a2,c2,b3,a3,c3)
 
