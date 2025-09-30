@@ -24,9 +24,9 @@ A numeric value equal to the log-likelihood.
 Computes the log-likelihood from model-simulated values based on a Gaussian independent
 error model with linearly-varying standard deviation:
 \itemize{
-    \item Yobs = Ysim + 𝛿 + 𝜀
-    \item Measurement errors: 𝛿~ N(0,sdev=Yu)
-    \item Structural errors: 𝜀~ N(0,sdev=g1+g2*|Ysim|)
+    \item Yobs = Ysim + delta + epsilon
+    \item Measurement errors: delta~ N(0,sdev=Yu)
+    \item Structural errors: epsilon~ N(0,sdev=g1+g2*|Ysim|)
 }
 If Yobs/Ysim are multi-variate, this error model is applied independently to each component.
 }

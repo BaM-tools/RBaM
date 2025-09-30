@@ -1,6 +1,6 @@
 #' Adaptive Metropolis sampler
 #'
-#' An adaptive Metropolis sampler largely inspired by Haario et al. (2001, \url{https://doi.org/10.2307/3318737}).
+#' An adaptive Metropolis sampler largely inspired by Haario et al. (2001, \url{https://www.jstor.org/stable/3318737}).
 #' The jump covariance is adapted using the empirical covariance of previously-sampled values,
 #' and the scaling factor is adapted in order to comply with a specified move rate interval.
 #'

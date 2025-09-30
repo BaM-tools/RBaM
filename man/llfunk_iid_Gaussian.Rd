@@ -21,9 +21,9 @@ A numeric value equal to the log-likelihood.
 \description{
 Computes the log-likelihood from model-simulated values, based on a Gaussian iid error model:
 \itemize{
-    \item Yobs = Ysim + 𝛿 + 𝜀
-    \item Measurement errors: 𝛿~ N(0,sdev=Yu)
-    \item Structural errors: 𝜀~ N(0,sdev=𝛾)
+    \item Yobs = Ysim + delta + epsilon
+    \item Measurement errors: delta~ N(0,sdev=Yu)
+    \item Structural errors: epsilon~ N(0,sdev=gamma)
 }
 If Yobs/Ysim are multi-variate, this error model is applied independently to each component.
 }
