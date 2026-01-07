@@ -129,6 +129,8 @@ runExe<-function(exedir,exename,workspace,arguments=NULL,stout=""){
 #' @return a logical, TRUE if the exe was found, false otherwise
 #' @keywords internal
 foundBaM <- function(exedir,exename){
+  if(is.null(exedir) | is.null(exename)){return(FALSE)}
   out=file.exists(file.path(exedir,exename)) |
     file.exists(file.path(exedir,paste0(exename,'.exe')))
+  return(out)
 }
