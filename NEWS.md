@@ -1,3 +1,8 @@
+# RBaM 1.1.2
+
+* Bug Fix: Catch cases when either `exedir` or `exename` is `NULL` in internal function `foundBaM(exedir,exename)`, and return `FALSE` in this case.
+* Miscellaneous minor changes.
+
 # RBaM 1.1.1
 
 * New functionality: `runModel()`, to perform a single run of any model available in RBaM.

@@ -171,7 +171,7 @@ BaM <- function(workspace,mod,data,
     ok=foundBaM(exedir=dir.exe,exename=name.exe)
     if(!ok){
       message(paste0('BaM executable was not found in folder: ',dir.exe,
-                     '. Call function downloadBaM("destination/folder/on/your/computer") to download it.'))
+                     '. Call function downloadBaM(destination_folder_on_your_computer) to download it.'))
       return()
     }
     res=try(runExe(exedir=dir.exe,exename=name.exe,workspace=workspace,stout=stout))
@@ -284,7 +284,7 @@ runModel <- function(workspace,mod,X,
     ok=foundBaM(exedir=dir.exe,exename=name.exe)
     if(!ok){
       message(paste0('BaM executable was not found in folder: ',dir.exe,
-                     '. Call function downloadBaM("destination/folder/on/your/computer") to download it.'))
+                     '. Call function downloadBaM(destination_folder_on_your_computer) to download it.'))
       return()
     }
     arg=paste('--config',
