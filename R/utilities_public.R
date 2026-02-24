@@ -204,6 +204,28 @@ setPathToBaM <- function(dir.exe,quiet=FALSE){
   }
 }
 
+#*******************************************************************************
+#' Path to BaM
+#'
+#' Get path to BaM executable
+#'
+#' @return A string containing the path of the directory containing BaM executable,
+#' or NULL if this directory has not been set yet.
+#' @examples
+#'   getPathToBaM()
+#' @export
+#' @importFrom tools R_user_dir
+getPathToBaM <- function(){
+  dir.config=tools::R_user_dir(package="RBaM",which="config")
+  fname=file.path(dir.config,'pathToBaM.txt')
+  if(file.exists(fname)){
+    dir.exe=readLines(fname,n=1)
+  } else {
+    dir.exe=NULL
+  }
+  return(dir.exe)
+}
+
 #' Bloc-diagonal matrix constructor
 #'
 #' This function creates a square bloc-diagonal matrix from a list of square blocs.
