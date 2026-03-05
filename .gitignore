@@ -42,3 +42,6 @@ vignettes/*.pdf
 BaM_workspace
 
 CRAN-SUBMISSION
+
+# bug-fixing folder
+bugs
