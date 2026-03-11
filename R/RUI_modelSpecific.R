@@ -173,7 +173,7 @@ writeConfig.xtra<-function(workspace,mod){
              x$zFileKmoy,NCOL(x$zKmoy),x$doExpKmoy)
     comments=c('Mage executable (full path)',
                'MAGE version',
-               'MAGE Project directories (full path), one per vent',
+               'MAGE Project directories (full path) - one per event',
                'REP file (located in MAGE project directory - file name only, not full path)',
                'Z file (full path) containing covariates for the regression Kmin(x)=a1Z1(x)+...+apZp(x). Leave empty for no regression',
                'number of columns p in Z file',
