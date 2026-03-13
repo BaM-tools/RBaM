@@ -90,10 +90,13 @@ SPD_estimate <-function(workspace,controlMatrix,pars,
     stop(mess,call.=FALSE)
   }
   nControl=NROW(controlMatrix)
-  if( NROW(bVAR)!=nControl | NROW(aVAR)!=nControl |
-      NROW(deltaPars)!=nControl | NROW(periods)!=nControl | NROW(nPeriods)!=nControl |
-      NROW(pars)!=3*nControl ){
-    mess=paste('Size mismatch in aVAR, bVAR, deltaPars, periods, nPeriods or pars')
+  if( NROW(bVAR)!=nControl | NROW(aVAR)!=nControl | NROW(pars)!=3*nControl ){
+    mess=paste('Size of aVAR, bVAR or pars is not consistent with the number of controls')
+    stop(mess,call.=FALSE)
+  }
+  nVAR=sum(aVAR)+sum(bVAR)
+  if( length(deltaPars)!=nVAR | length(periods)!=nVAR | length(nPeriods)!=nVAR ){
+    mess=paste('Size of deltaPars, periods or nPeriods is not consistent with the number of VAR parameters')
     stop(mess,call.=FALSE)
   }
 
