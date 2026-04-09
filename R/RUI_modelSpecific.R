@@ -28,7 +28,7 @@ writeConfig.xtra<-function(workspace,mod){
   fname=mod$xtra$fname
   # Models requiring no xtra information
   if(ID %in% c('Linear','SGD','SFDTidal','SFDTidal_Sw_correction','SFDTidal2','SFDTidalJones','SFDTidal4',
-               'SFDTidal_Qmec0','SFDTidal_Qmec','SFDTidal_Qmec2','TidalODE','TidalRemenieras',
+               'SFDTidal_Qmec0','SFDTidal_Qmec','SFDTidal_Qmec2','SFDTidal_QmecMS','TidalODE','TidalRemenieras',
                'SuspendedLoad','Recession_h','AlgaeBiomass')){
     # Do nothing
   }
@@ -217,7 +217,7 @@ getCatalogue<-function(printOnly=FALSE){
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
            'Tidal','SFDTidal','SFDTidal2','SFDTidalJones','SFDTidal4',
-           'SFDTidal_Qmec0','SFDTidal_Qmec','SFDTidal_Qmec2',
+           'SFDTidal_Qmec0','SFDTidal_Qmec','SFDTidal_Qmec2','SFDTidal_QmecMS',
            'TidalODE','TidalRemenieras','SFDTidal_Sw_correction',
            'MAGE','MAGE_TEMP','MAGE_ZQV','HydraulicControl_section')
   if(printOnly){
