@@ -55,6 +55,16 @@ writeConfig.xtra<-function(workspace,mod){
     txt<-toString_engine(val,NULL)
     quickWrite(txt,workspace,fname)
   }
+  #Vegetation SH: takes three parameters on seperate lines (Growth model, number of years, changing variable (a or b))
+  # and then control matrix
+  if (ID == "Vegetation_SH") {
+    val <- x[1:3]
+    for (i in 1:NCOL(x[[4]])) {
+      val <- c(val, list(x[[4]][i, ]))
+    }
+    txt <- toString_engine(val, NULL)
+    quickWrite(txt, workspace, fname)
+  }
   # General section hydraulic control: write h-A-w matrix into the config file
   if(ID=='HydraulicControl_section'){
     val=list()
@@ -213,6 +223,7 @@ getCatalogue<-function(printOnly=FALSE){
   models=c('TextFile',
            'BaRatin','BaRatinBAC','SFD','SGD','SWOT',
            'Vegetation','AlgaeBiomass','DynamicVegetation',
+           'Vegetation_SH',
            'Recession_h','Segmentation',
            'Sediment','SuspendedLoad',
            'Linear','Mixture','Orthorectification','GR4J',
